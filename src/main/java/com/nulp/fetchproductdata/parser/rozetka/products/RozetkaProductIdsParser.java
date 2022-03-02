@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class RozetkaProductsParser {
+public class RozetkaProductIdsParser {
 
     private final String apiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/get";
     private final Gson gson = new Gson();
