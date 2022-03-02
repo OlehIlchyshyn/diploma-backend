@@ -2,6 +2,7 @@ package com.nulp.fetchproductdata.parser.rozetka.categories;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nulp.fetchproductdata.common.WebClient;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.temp.RootCategory;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.temp.SubCategory;
@@ -9,11 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +23,7 @@ public class RozetkaCategoriesParser {
     private final ModelMapper modelMapper = new ModelMapper();
 
     public List<Category> fetchCategoriesFromApi() {
-        String json = getApiResponse();
+        String json = WebClient.getApiResponse(categoriesApiUrl);
         JsonObject jsonObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
         List<RootCategory> rootCategories = jsonObject
                 .entrySet()
@@ -36,8 +32,7 @@ public class RozetkaCategoriesParser {
                 .map(categoryObject -> gson.fromJson(categoryObject, RootCategory.class))
                 .collect(Collectors.toList());
 
-        List<Category> categories = cleanUpCategories(rootCategories);
-        return categories;
+        return cleanUpCategories(rootCategories);
     }
 
     private List<Category> cleanUpCategories(List<RootCategory> categories) {
@@ -67,23 +62,5 @@ public class RozetkaCategoriesParser {
                     return category;
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String getApiResponse() {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .uri(URI.create(categoriesApiUrl))
-                .build();
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            log.error("Error while fetching data from product price API: ", e);
-        } catch (InterruptedException e) {
-            log.error("Thread was interrupted while fetching data.");
-        }
-
-        return response.body();
     }
 }
