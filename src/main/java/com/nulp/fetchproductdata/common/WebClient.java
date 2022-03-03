@@ -21,7 +21,7 @@ public class WebClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.body();
         } catch (IOException e) {
-            log.error("Error while fetching data from product price API: ", e);
+            log.error("Error while fetching data from API: ", e);
         } catch (InterruptedException e) {
             log.error("Thread was interrupted while fetching data.");
         }
