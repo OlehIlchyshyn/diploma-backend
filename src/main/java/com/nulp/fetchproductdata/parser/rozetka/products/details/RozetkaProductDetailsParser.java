@@ -1,11 +1,11 @@
-package com.nulp.fetchproductdata.parser.rozetka.products.ids;
+package com.nulp.fetchproductdata.parser.rozetka.products.details;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nulp.fetchproductdata.common.WebClient;
-import com.nulp.fetchproductdata.parser.rozetka.products.ids.model.ProductDetails;
+import com.nulp.fetchproductdata.parser.rozetka.products.details.model.ProductDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

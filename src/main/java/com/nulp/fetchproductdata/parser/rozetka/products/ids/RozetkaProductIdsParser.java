@@ -1,9 +1,9 @@
-package com.nulp.fetchproductdata.parser.rozetka.products;
+package com.nulp.fetchproductdata.parser.rozetka.products.ids;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nulp.fetchproductdata.common.WebClient;
-import com.nulp.fetchproductdata.parser.rozetka.products.model.IdsResponse;
+import com.nulp.fetchproductdata.parser.rozetka.products.ids.model.IdsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

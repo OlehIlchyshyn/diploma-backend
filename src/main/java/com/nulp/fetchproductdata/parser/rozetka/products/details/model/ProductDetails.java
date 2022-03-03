@@ -1,4 +1,4 @@
-package com.nulp.fetchproductdata.parser.rozetka.products.ids.model;
+package com.nulp.fetchproductdata.parser.rozetka.products.details.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
