@@ -6,6 +6,7 @@ import com.nulp.fetchproductdata.common.WebClient;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.temp.RootCategory;
 import com.nulp.fetchproductdata.parser.rozetka.categories.model.temp.SubCategory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,11 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RozetkaCategoriesParser {
-    private final String categoriesApiUrl = "https://common-api.rozetka.com.ua/v2/fat-menu/full";
+    private final String categoriesApiUrl = "https://common-api.rozetka.com.ua/v2/fat-menu/full?lang=ua";
     private final Gson gson = new Gson();
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper;
 
     public List<Category> fetchCategoriesFromApi() {
         String json = WebClient.getApiResponse(categoriesApiUrl);
