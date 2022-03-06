@@ -1,4 +1,4 @@
-package com.nulp.fetchproductdata.common.model;
+package com.nulp.fetchproductdata.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.nulp.fetchproductdata.common.model;
+package com.nulp.fetchproductdata.model;
 
 public enum Currency {
     USD,
