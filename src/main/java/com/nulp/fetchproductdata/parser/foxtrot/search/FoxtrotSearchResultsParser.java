@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.parser.foxtrot.search;
 
 import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,12 +10,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 @Component
+@Slf4j
 public class FoxtrotSearchResultsParser {
 
     private final String searchPageUrl = "https://www.foxtrot.com.ua/uk/search";
     private final String urlPrefix = "https://www.foxtrot.com.ua";
+
     public SearchResult searchByProductTitle(String title) {
 
         String searchQueryUrl = UriComponentsBuilder.fromUriString(searchPageUrl)
@@ -30,6 +34,8 @@ public class FoxtrotSearchResultsParser {
             } else {
                 return parseReturnedPageAsSearchResult(document);
             }
+        } catch (ConnectException e) {
+            log.warn("Connection failed, while trying to search for: " + title);
         } catch (IOException e) {
             e.printStackTrace();
         }

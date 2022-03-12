@@ -21,7 +21,7 @@ public class RozetkaProductDetailsParser {
     private final String detailsApiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/getDetails";
     private final Gson gson = new Gson();
 
-    public List<ProductDetails> getProductDetailsByProductId(List<Long> productIds) {
+    public List<ProductDetails> getProductDetailsByProductId(List<Integer> productIds) {
         String uriWithIdsParam = UriComponentsBuilder
                 .fromUriString(detailsApiUrl)
                 .queryParam("product_ids",

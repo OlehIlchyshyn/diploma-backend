@@ -18,7 +18,7 @@ public class RozetkaProductIdsParser {
     private final String apiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/get";
     private final Gson gson = new Gson();
 
-    public List<Long> getProductIdsByCategory(long categoryId) {
+    public List<Integer> getProductIdsByCategory(long categoryId) {
         String urlByCategory = UriComponentsBuilder
                 .fromUriString(apiUrl)
                 .queryParam("category_id", categoryId)
@@ -27,7 +27,7 @@ public class RozetkaProductIdsParser {
 
         String jsonResponse = WebClient.getApiResponse(urlByCategory);
         IdsResponse firstPage = getProductDataFromJson(jsonResponse);
-        List<Long> allIds = new ArrayList<>(firstPage.getCount());
+        List<Integer> allIds = new ArrayList<>(firstPage.getCount());
         allIds.addAll(firstPage.getIds());
 
         for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {
@@ -44,7 +44,7 @@ public class RozetkaProductIdsParser {
         return allIds;
     }
 
-    public List<Long> getProductIdsByCategoryAndBrand(long categoryId, String producer) {
+    public List<Integer> getProductIdsByCategoryAndBrand(long categoryId, String producer) {
         String urlByCategoryAndProducer = UriComponentsBuilder
                 .fromUriString(apiUrl)
                 .queryParam("category_id", categoryId)
@@ -54,7 +54,7 @@ public class RozetkaProductIdsParser {
 
         String jsonResponse = WebClient.getApiResponse(urlByCategoryAndProducer);
         IdsResponse firstPage = getProductDataFromJson(jsonResponse);
-        List<Long> allIds = new ArrayList<>(firstPage.getCount());
+        List<Integer> allIds = new ArrayList<>(firstPage.getCount());
         allIds.addAll(firstPage.getIds());
 
         for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {

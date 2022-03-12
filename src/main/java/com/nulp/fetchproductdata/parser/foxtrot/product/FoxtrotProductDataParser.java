@@ -2,6 +2,8 @@ package com.nulp.fetchproductdata.parser.foxtrot.product;
 
 import com.google.gson.Gson;
 import com.nulp.fetchproductdata.parser.foxtrot.product.model.ProductData;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class FoxtrotProductDataParser {
 
     public ProductData parseDataFromProductPage(String productPageUrl) {
@@ -18,7 +21,10 @@ public class FoxtrotProductDataParser {
                     .get(0).data();
 
             return translateJsonToProductData(productDataJson);
-        } catch (IOException e) {
+        } catch (HttpStatusException e) {
+            log.warn("Can't fetch product for url: " + productPageUrl);
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         return null;

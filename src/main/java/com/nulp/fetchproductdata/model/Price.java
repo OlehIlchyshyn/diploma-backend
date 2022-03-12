@@ -1,11 +1,18 @@
 package com.nulp.fetchproductdata.model;
 
+import com.nulp.fetchproductdata.common.enumeration.Currency;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Price {
 
     @Id
@@ -17,6 +24,10 @@ public class Price {
 
     private double amount;
 
-    @OneToOne
+    private String status;
+
+    private String purchaseUrl;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
     private PriceProvider priceProvider;
 }

@@ -9,9 +9,9 @@ import java.util.List;
 public class SubCategory {
     private final String title;
     @SerializedName("category_id")
-    private final long categoryId;
+    private final int categoryId;
     @SerializedName("top_category_id")
-    private final long topCategoryId;
+    private final int topCategoryId;
     @SerializedName("manual_url")
     private String manualUrl;
     private List<SubCategory> children;

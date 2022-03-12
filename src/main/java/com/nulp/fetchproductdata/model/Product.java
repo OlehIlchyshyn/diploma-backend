@@ -1,7 +1,10 @@
 package com.nulp.fetchproductdata.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -11,6 +14,9 @@ import java.util.Map;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Product {
 
@@ -18,18 +24,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String brand;
+//    private String brand;
 
-    private String model;
+//    private String model;
 
     private String fullName;
 
+    @Column(columnDefinition = "text")
     private String description;
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private Map<String, String> techSpecs;
+    private Map<String, Map<String, String>> techSpecs;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Price> priceList;
 }

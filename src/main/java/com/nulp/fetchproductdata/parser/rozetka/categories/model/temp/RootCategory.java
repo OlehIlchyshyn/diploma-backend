@@ -7,9 +7,9 @@ import lombok.Data;
 public class RootCategory {
     private final String title;
     @SerializedName("category_id")
-    private final long categoryId;
+    private final int categoryId;
     @SerializedName("top_category_id")
-    private final long topCategoryId;
+    private final int topCategoryId;
     @SerializedName("manual_url")
     private final String manualUrl;
     private ChildrenObject children;

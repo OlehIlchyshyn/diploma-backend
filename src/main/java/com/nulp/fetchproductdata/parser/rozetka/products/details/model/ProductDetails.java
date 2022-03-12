@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ProductDetails {
 
-    private final long id;
+    private final int id;
 
     private final String title;
 

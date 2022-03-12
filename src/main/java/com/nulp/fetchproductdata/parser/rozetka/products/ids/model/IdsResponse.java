@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class IdsResponse {
 
-    private final List<Long> ids;
+    private final List<Integer> ids;
 
     @SerializedName("ids_count")
     private final int count;
