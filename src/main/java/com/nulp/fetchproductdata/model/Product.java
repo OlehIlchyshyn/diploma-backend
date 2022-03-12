@@ -20,23 +20,23 @@ import java.util.Map;
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-//    private String brand;
+  //    private String brand;
 
-//    private String model;
+  //    private String model;
 
-    private String fullName;
+  private String fullName;
 
-    @Column(columnDefinition = "text")
-    private String description;
+  @Column(columnDefinition = "text")
+  private String description;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private Map<String, Map<String, String>> techSpecs;
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Map<String, String>> techSpecs;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Price> priceList;
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<Price> priceList;
 }

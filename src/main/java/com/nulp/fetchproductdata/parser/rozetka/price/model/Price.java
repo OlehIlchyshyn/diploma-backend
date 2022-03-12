@@ -6,19 +6,19 @@ import lombok.Data;
 @Data
 public class Price {
 
-    @SerializedName("old_price")
-    private final double oldPrice;
+  @SerializedName("old_price")
+  private final double oldPrice;
 
-    @SerializedName("old_usd_price")
-    private final double oldUsdPrice;
+  @SerializedName("old_usd_price")
+  private final double oldUsdPrice;
 
-    private final double price;
+  private final double price;
 
-    @SerializedName("usd_price")
-    private final double usdPrice;
+  @SerializedName("usd_price")
+  private final double usdPrice;
 
-    private final String status;
+  private final String status;
 
-    @SerializedName("sell_status")
-    private final String sellStatus;
+  @SerializedName("sell_status")
+  private final String sellStatus;
 }

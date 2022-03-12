@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class PriceProvider {
 
-    private Long id;
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String url;
+  private String url;
 }

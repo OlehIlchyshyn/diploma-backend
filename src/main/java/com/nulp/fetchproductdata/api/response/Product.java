@@ -8,13 +8,13 @@ import java.util.Map;
 @Data
 public class Product {
 
-    private long id;
+  private long id;
 
-    private String fullName;
+  private String fullName;
 
-    private String description;
+  private String description;
 
-    private Map<String, Map<String, String>> techSpecs;
+  private Map<String, Map<String, String>> techSpecs;
 
-    private List<Price> priceList;
+  private List<Price> priceList;
 }

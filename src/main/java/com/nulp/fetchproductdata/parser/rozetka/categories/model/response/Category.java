@@ -8,9 +8,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Category {
-    private String title;
-    private int categoryId;
-    private int topCategoryId;
-    private String manualUrl;
-    private List<Category> children;
+  private String title;
+  private int categoryId;
+  private int topCategoryId;
+  private String manualUrl;
+  private List<Category> children;
 }

@@ -15,65 +15,65 @@ import java.util.List;
 @Slf4j
 public class RozetkaProductIdsParser {
 
-    private final String apiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/get";
-    private final Gson gson = new Gson();
+  private final String apiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/get";
+  private final Gson gson = new Gson();
 
-    public List<Integer> getProductIdsByCategory(long categoryId) {
-        String urlByCategory = UriComponentsBuilder
-                .fromUriString(apiUrl)
-                .queryParam("category_id", categoryId)
-                .build()
-                .toUriString();
+  public List<Integer> getProductIdsByCategory(long categoryId) {
+    String urlByCategory =
+        UriComponentsBuilder.fromUriString(apiUrl)
+            .queryParam("category_id", categoryId)
+            .build()
+            .toUriString();
 
-        String jsonResponse = WebClient.getApiResponse(urlByCategory);
-        IdsResponse firstPage = getProductDataFromJson(jsonResponse);
-        List<Integer> allIds = new ArrayList<>(firstPage.getCount());
-        allIds.addAll(firstPage.getIds());
+    String jsonResponse = WebClient.getApiResponse(urlByCategory);
+    IdsResponse firstPage = getProductDataFromJson(jsonResponse);
+    List<Integer> allIds = new ArrayList<>(firstPage.getCount());
+    allIds.addAll(firstPage.getIds());
 
-        for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {
-            String urlWithPaging = UriComponentsBuilder
-                    .fromUriString(apiUrl)
-                    .queryParam("page", pageNumber)
-                    .queryParam("category_id", categoryId)
-                    .build()
-                    .toUriString();
-            IdsResponse productData = getProductDataFromJson(WebClient.getApiResponse(urlWithPaging));
-            allIds.addAll(productData.getIds());
-        }
-
-        return allIds;
+    for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {
+      String urlWithPaging =
+          UriComponentsBuilder.fromUriString(apiUrl)
+              .queryParam("page", pageNumber)
+              .queryParam("category_id", categoryId)
+              .build()
+              .toUriString();
+      IdsResponse productData = getProductDataFromJson(WebClient.getApiResponse(urlWithPaging));
+      allIds.addAll(productData.getIds());
     }
 
-    public List<Integer> getProductIdsByCategoryAndBrand(long categoryId, String producer) {
-        String urlByCategoryAndProducer = UriComponentsBuilder
-                .fromUriString(apiUrl)
-                .queryParam("category_id", categoryId)
-                .queryParam("producer", producer)
-                .build()
-                .toUriString();
+    return allIds;
+  }
 
-        String jsonResponse = WebClient.getApiResponse(urlByCategoryAndProducer);
-        IdsResponse firstPage = getProductDataFromJson(jsonResponse);
-        List<Integer> allIds = new ArrayList<>(firstPage.getCount());
-        allIds.addAll(firstPage.getIds());
+  public List<Integer> getProductIdsByCategoryAndBrand(long categoryId, String producer) {
+    String urlByCategoryAndProducer =
+        UriComponentsBuilder.fromUriString(apiUrl)
+            .queryParam("category_id", categoryId)
+            .queryParam("producer", producer)
+            .build()
+            .toUriString();
 
-        for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {
-            String urlWithPaging = UriComponentsBuilder
-                    .fromUriString(apiUrl)
-                    .queryParam("page", pageNumber)
-                    .queryParam("category_id", categoryId)
-                    .queryParam("producer", producer)
-                    .build()
-                    .toUriString();
-            IdsResponse productData = getProductDataFromJson(WebClient.getApiResponse(urlWithPaging));
-            allIds.addAll(productData.getIds());
-        }
+    String jsonResponse = WebClient.getApiResponse(urlByCategoryAndProducer);
+    IdsResponse firstPage = getProductDataFromJson(jsonResponse);
+    List<Integer> allIds = new ArrayList<>(firstPage.getCount());
+    allIds.addAll(firstPage.getIds());
 
-        return allIds;
+    for (int pageNumber = 2; pageNumber <= firstPage.getPagesCount(); ++pageNumber) {
+      String urlWithPaging =
+          UriComponentsBuilder.fromUriString(apiUrl)
+              .queryParam("page", pageNumber)
+              .queryParam("category_id", categoryId)
+              .queryParam("producer", producer)
+              .build()
+              .toUriString();
+      IdsResponse productData = getProductDataFromJson(WebClient.getApiResponse(urlWithPaging));
+      allIds.addAll(productData.getIds());
     }
 
-    private IdsResponse getProductDataFromJson(String json) {
-        JsonObject dataObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
-        return gson.fromJson(dataObject, IdsResponse.class);
-    }
+    return allIds;
+  }
+
+  private IdsResponse getProductDataFromJson(String json) {
+    JsonObject dataObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
+    return gson.fromJson(dataObject, IdsResponse.class);
+  }
 }

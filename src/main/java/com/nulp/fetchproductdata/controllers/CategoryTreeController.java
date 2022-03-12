@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryTreeController implements CatalogApi {
 
-    private final RetrieveCategoriesService categoriesService;
+  private final RetrieveCategoriesService categoriesService;
 
-    public Catalog getRootCatalog(boolean reindex, boolean includeSubcategories, boolean includeProductList) {
-        return categoriesService.getCatalog(reindex, includeSubcategories, includeProductList);
-    }
+  public Catalog getRootCatalog(
+      boolean reindex, boolean includeSubcategories, boolean includeProductList) {
+    return categoriesService.getCatalog(reindex, includeSubcategories, includeProductList);
+  }
 }
-

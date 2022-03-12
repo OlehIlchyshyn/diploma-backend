@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class RozetkaPriceParser {
 
-    private final String apiLink = "https://common-api.rozetka.com.ua/v2/goods/get-price/?id=";
+  private final String apiLink = "https://common-api.rozetka.com.ua/v2/goods/get-price/?id=";
 
-    public Price getPriceById(long productId) {
-        String json = WebClient.getApiResponse(apiLink + productId);
+  public Price getPriceById(long productId) {
+    String json = WebClient.getApiResponse(apiLink + productId);
 
-        return translateJsonToPriceModel(json);
-    }
+    return translateJsonToPriceModel(json);
+  }
 
-    private Price translateJsonToPriceModel(String json) {
-        return new Gson().fromJson(json, Price.class);
-    }
+  private Price translateJsonToPriceModel(String json) {
+    return new Gson().fromJson(json, Price.class);
+  }
 }

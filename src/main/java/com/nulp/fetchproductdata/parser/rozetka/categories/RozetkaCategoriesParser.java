@@ -20,49 +20,53 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 public class RozetkaCategoriesParser {
-    private final String categoriesApiUrl = "https://common-api.rozetka.com.ua/v2/fat-menu/full?lang=ua";
-    private final Gson gson = new Gson();
-    private final ModelMapper modelMapper;
+  private final String categoriesApiUrl =
+      "https://common-api.rozetka.com.ua/v2/fat-menu/full?lang=ua";
+  private final Gson gson = new Gson();
+  private final ModelMapper modelMapper;
 
-    public List<Category> fetchCategoriesFromApi() {
-        String json = WebClient.getApiResponse(categoriesApiUrl);
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
-        List<RootCategory> rootCategories = jsonObject
-                .entrySet()
-                .stream()
-                .map(Map.Entry::getValue)
-                .map(categoryObject -> gson.fromJson(categoryObject, RootCategory.class))
-                .collect(Collectors.toList());
+  public List<Category> fetchCategoriesFromApi() {
+    String json = WebClient.getApiResponse(categoriesApiUrl);
+    JsonObject jsonObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
+    List<RootCategory> rootCategories =
+        jsonObject.entrySet().stream()
+            .map(Map.Entry::getValue)
+            .map(categoryObject -> gson.fromJson(categoryObject, RootCategory.class))
+            .collect(Collectors.toList());
 
-        return cleanUpCategories(rootCategories);
-    }
+    return cleanUpCategories(rootCategories);
+  }
 
-    private List<Category> cleanUpCategories(List<RootCategory> categories) {
-        return categories.stream()
-                .map(rootCategory -> {
-                    Category category = modelMapper.map(rootCategory, Category.class);
-                    if (rootCategory.getChildren() != null) {
-                        category.setChildren(Stream.of(
-                                        getChildrenCategories(rootCategory.getChildren().getOne()),
-                                        getChildrenCategories(rootCategory.getChildren().getTwo()),
-                                        getChildrenCategories(rootCategory.getChildren().getThree()))
-                                .flatMap(List::stream)
-                                .collect(Collectors.toList()));
-                    }
-                    return category;
-                })
-                .collect(Collectors.toList());
-    }
+  private List<Category> cleanUpCategories(List<RootCategory> categories) {
+    return categories.stream()
+        .map(
+            rootCategory -> {
+              Category category = modelMapper.map(rootCategory, Category.class);
+              if (rootCategory.getChildren() != null) {
+                category.setChildren(
+                    Stream.of(
+                            getChildrenCategories(rootCategory.getChildren().getOne()),
+                            getChildrenCategories(rootCategory.getChildren().getTwo()),
+                            getChildrenCategories(rootCategory.getChildren().getThree()))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()));
+              }
+              return category;
+            })
+        .collect(Collectors.toList());
+  }
 
-    private List<Category> getChildrenCategories(List<SubCategory> list) {
-        return list.stream()
-                .map(subCategory -> {
-                    Category category = modelMapper.map(subCategory, Category.class);
-                    category.setChildren(subCategory.getChildren().stream()
-                            .map(children -> modelMapper.map(children, Category.class))
-                            .collect(Collectors.toList()));
-                    return category;
-                })
-                .collect(Collectors.toList());
-    }
+  private List<Category> getChildrenCategories(List<SubCategory> list) {
+    return list.stream()
+        .map(
+            subCategory -> {
+              Category category = modelMapper.map(subCategory, Category.class);
+              category.setChildren(
+                  subCategory.getChildren().stream()
+                      .map(children -> modelMapper.map(children, Category.class))
+                      .collect(Collectors.toList()));
+              return category;
+            })
+        .collect(Collectors.toList());
+  }
 }

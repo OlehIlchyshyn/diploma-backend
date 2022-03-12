@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class DetailValue {
 
-    private final String title;
+  private final String title;
 
-    private final String href;
+  private final String href;
 }

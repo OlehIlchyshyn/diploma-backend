@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PriceMetadata {
-    private final double fullPrice;
+  private final double fullPrice;
 }

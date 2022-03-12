@@ -18,23 +18,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RozetkaProductDetailsParser {
 
-    private final String detailsApiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/getDetails";
-    private final Gson gson = new Gson();
+  private final String detailsApiUrl = "https://xl-catalog-api.rozetka.com.ua/v4/goods/getDetails";
+  private final Gson gson = new Gson();
 
-    public List<ProductDetails> getProductDetailsByProductId(List<Integer> productIds) {
-        String uriWithIdsParam = UriComponentsBuilder
-                .fromUriString(detailsApiUrl)
-                .queryParam("product_ids",
-                        productIds
-                        .stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(",")))
-                .build()
-                .toUriString();
+  public List<ProductDetails> getProductDetailsByProductId(List<Integer> productIds) {
+    String uriWithIdsParam =
+        UriComponentsBuilder.fromUriString(detailsApiUrl)
+            .queryParam(
+                "product_ids",
+                productIds.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .build()
+            .toUriString();
 
-        String json = WebClient.getApiResponse(uriWithIdsParam);
-        JsonArray dataArray = gson.fromJson(json, JsonObject.class).getAsJsonArray("data");
-        Type productListType = new TypeToken<List<ProductDetails>>(){}.getType();
-        return gson.fromJson(dataArray, productListType);
-    }
+    String json = WebClient.getApiResponse(uriWithIdsParam);
+    JsonArray dataArray = gson.fromJson(json, JsonObject.class).getAsJsonArray("data");
+    Type productListType = new TypeToken<List<ProductDetails>>() {}.getType();
+    return gson.fromJson(dataArray, productListType);
+  }
 }

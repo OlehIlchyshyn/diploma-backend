@@ -7,12 +7,16 @@ import java.util.List;
 
 @Data
 public class SubCategory {
-    private final String title;
-    @SerializedName("category_id")
-    private final int categoryId;
-    @SerializedName("top_category_id")
-    private final int topCategoryId;
-    @SerializedName("manual_url")
-    private String manualUrl;
-    private List<SubCategory> children;
+  private final String title;
+
+  @SerializedName("category_id")
+  private final int categoryId;
+
+  @SerializedName("top_category_id")
+  private final int topCategoryId;
+
+  @SerializedName("manual_url")
+  private String manualUrl;
+
+  private List<SubCategory> children;
 }

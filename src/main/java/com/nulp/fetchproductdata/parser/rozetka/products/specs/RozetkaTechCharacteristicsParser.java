@@ -9,22 +9,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class RozetkaTechCharacteristicsParser {
 
-    private final String apiLink = "https://product-api.rozetka.com.ua/v4/goods/get-characteristic";
-    private final Gson gson = new Gson();
+  private final String apiLink = "https://product-api.rozetka.com.ua/v4/goods/get-characteristic";
+  private final Gson gson = new Gson();
 
-    public TechCharacteristics getTechCharacteristicsByProductId(int productId) {
-        String uriWithIdParam = UriComponentsBuilder.fromUriString(apiLink)
-                .queryParam("goodsId", productId)
-                .queryParam("lang", "ua")
-                .build()
-                .toUriString();
+  public TechCharacteristics getTechCharacteristicsByProductId(int productId) {
+    String uriWithIdParam =
+        UriComponentsBuilder.fromUriString(apiLink)
+            .queryParam("goodsId", productId)
+            .queryParam("lang", "ua")
+            .build()
+            .toUriString();
 
-        String json = WebClient.getApiResponse(uriWithIdParam);
+    String json = WebClient.getApiResponse(uriWithIdParam);
 
-        return translateToModel(json);
-    }
+    return translateToModel(json);
+  }
 
-    private TechCharacteristics translateToModel(String json) {
-        return gson.fromJson(json, TechCharacteristics.class);
-    }
+  private TechCharacteristics translateToModel(String json) {
+    return gson.fromJson(json, TechCharacteristics.class);
+  }
 }

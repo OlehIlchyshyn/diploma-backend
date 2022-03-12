@@ -17,12 +17,11 @@ import javax.persistence.Id;
 @AllArgsConstructor
 public class PriceProvider {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String url;
-
+  private String url;
 }

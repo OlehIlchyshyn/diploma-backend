@@ -13,16 +13,16 @@ import java.util.Set;
 @NoArgsConstructor
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    private String title;
+  private String title;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Category> subCategories = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL)
+  private Set<Category> subCategories = new HashSet<>();
 
-    //todo revisit need of cascading here
-    @ManyToMany(cascade=CascadeType.PERSIST)
-    private List<Product> products;
+  // todo revisit need of cascading here
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  private List<Product> products;
 }

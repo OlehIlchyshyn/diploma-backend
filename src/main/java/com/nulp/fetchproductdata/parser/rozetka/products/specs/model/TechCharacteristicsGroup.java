@@ -8,12 +8,12 @@ import java.util.List;
 @Data
 public class TechCharacteristicsGroup {
 
-    @SerializedName("group_id")
-    private final int groupId;
+  @SerializedName("group_id")
+  private final int groupId;
 
-    @SerializedName("groupTitle")
-    private final String groupTitle;
+  @SerializedName("groupTitle")
+  private final String groupTitle;
 
-    @SerializedName("options")
-    private final List<TechDetail> specs;
+  @SerializedName("options")
+  private final List<TechDetail> specs;
 }

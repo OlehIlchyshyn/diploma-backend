@@ -7,15 +7,15 @@ import lombok.Data;
 @Data
 public class Price {
 
-    private Long id;
+  private Long id;
 
-    private Currency currency;
+  private Currency currency;
 
-    private double amount;
+  private double amount;
 
-    private String status;
+  private String status;
 
-    private String purchaseUrl;
+  private String purchaseUrl;
 
-    private PriceProvider priceProvider;
+  private PriceProvider priceProvider;
 }

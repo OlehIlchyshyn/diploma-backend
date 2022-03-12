@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class TechCharacteristics {
 
-    @SerializedName("data")
-    private final List<TechCharacteristicsGroup> techCharacteristicsGroupList;
+  @SerializedName("data")
+  private final List<TechCharacteristicsGroup> techCharacteristicsGroupList;
 }

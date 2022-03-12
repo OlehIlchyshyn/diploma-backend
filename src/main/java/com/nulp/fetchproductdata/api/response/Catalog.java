@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class Catalog {
-    private final List<Category> categoryList;
+  private final List<Category> categoryList;
 }

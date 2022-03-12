@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class ChildrenObject {
-    private List<SubCategory> one;
-    private List<SubCategory> two;
-    private List<SubCategory> three;
+  private List<SubCategory> one;
+  private List<SubCategory> two;
+  private List<SubCategory> three;
 }

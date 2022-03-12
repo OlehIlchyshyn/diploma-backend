@@ -15,30 +15,31 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PriceService {
 
-    private final List<PriceProvider> priceProviders;
+  private final List<PriceProvider> priceProviders;
 
-    public List<Price> getPriceByProductTitle(String title) {
+  public List<Price> getPriceByProductTitle(String title) {
 
-        String polishedTitle;
+    String polishedTitle;
 
-        Pattern bracketsPatter = Pattern.compile("\\((.*?)\\)");
-        Matcher matcher = bracketsPatter.matcher(title);
-        if (matcher.find()) {
-            polishedTitle = matcher.group(1);
-        } else {
-            polishedTitle = title
-                    .replaceAll("[а-яА-Я]", "")
-                    .replaceAll("\"", "")
-                    .replaceAll("'", "")
-                    .replaceAll("\u200E", "")
-                    .replaceAll(" ", "+")
-                    .replaceAll("ㅤ", "+")
-                    .replaceAll(" ", "+");
-        }
-
-        return priceProviders.stream()
-                .map(priceProvider -> priceProvider.getPriceByProductTitle(polishedTitle))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    Pattern bracketsPatter = Pattern.compile("\\((.*?)\\)");
+    Matcher matcher = bracketsPatter.matcher(title);
+    if (matcher.find()) {
+      polishedTitle = matcher.group(1);
+    } else {
+      polishedTitle =
+          title
+              .replaceAll("[а-яА-Я]", "")
+              .replaceAll("\"", "")
+              .replaceAll("'", "")
+              .replaceAll("\u200E", "")
+              .replaceAll(" ", "+")
+              .replaceAll("ㅤ", "+")
+              .replaceAll(" ", "+");
     }
+
+    return priceProviders.stream()
+        .map(priceProvider -> priceProvider.getPriceByProductTitle(polishedTitle))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
 }

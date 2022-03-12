@@ -16,20 +16,24 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TechCharacteristicsService {
 
-    private final RozetkaTechCharacteristicsParser techCharacteristicsParser;
+  private final RozetkaTechCharacteristicsParser techCharacteristicsParser;
 
-    public Map<String, Map<String, String>> getTechCharacteristicsByProductId(Integer id) {
-        TechCharacteristics techCharacteristics = techCharacteristicsParser.getTechCharacteristicsByProductId(id);
-        return techCharacteristics.getTechCharacteristicsGroupList()
-                .stream()
-                .collect(Collectors.toMap(
-                        TechCharacteristicsGroup::getGroupTitle,
-                        (value) -> value.getSpecs().stream()
-                                .collect(Collectors.toMap(TechDetail::getTitle,
-                                        (techDetail) -> techDetail.getValues().get(0).getTitle(),
-                                        (firstTitle, secondTitle) -> {
-                                            log.warn("Duplicate tech detail key: " + firstTitle);
-                                            return firstTitle;
-                                        }))));
-    }
+  public Map<String, Map<String, String>> getTechCharacteristicsByProductId(Integer id) {
+    TechCharacteristics techCharacteristics =
+        techCharacteristicsParser.getTechCharacteristicsByProductId(id);
+    return techCharacteristics.getTechCharacteristicsGroupList().stream()
+        .collect(
+            Collectors.toMap(
+                TechCharacteristicsGroup::getGroupTitle,
+                (value) ->
+                    value.getSpecs().stream()
+                        .collect(
+                            Collectors.toMap(
+                                TechDetail::getTitle,
+                                (techDetail) -> techDetail.getValues().get(0).getTitle(),
+                                (firstTitle, secondTitle) -> {
+                                  log.warn("Duplicate tech detail key: " + firstTitle);
+                                  return firstTitle;
+                                }))));
+  }
 }

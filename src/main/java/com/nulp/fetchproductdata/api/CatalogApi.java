@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/api/catalog")
 public interface CatalogApi {
-    @GetMapping("/")
-    Catalog getRootCatalog(
-            @RequestParam(value = "reindex", required = false) boolean reindex,
-            @RequestParam(value = "includeSubcategories", required = false) boolean includeSubcategories,
-            @RequestParam(value = "includeProductList", required = false) boolean includeProductList);
+  @GetMapping("/")
+  Catalog getRootCatalog(
+      @RequestParam(value = "reindex", required = false) boolean reindex,
+      @RequestParam(value = "includeSubcategories", required = false) boolean includeSubcategories,
+      @RequestParam(value = "includeProductList", required = false) boolean includeProductList);
 }

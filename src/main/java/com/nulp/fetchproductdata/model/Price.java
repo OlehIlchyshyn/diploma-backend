@@ -15,19 +15,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Price {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Currency currency;
+  @Enumerated(EnumType.STRING)
+  private Currency currency;
 
-    private double amount;
+  private double amount;
 
-    private String status;
+  private String status;
 
-    private String purchaseUrl;
+  private String purchaseUrl;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private PriceProvider priceProvider;
+  @OneToOne(cascade = CascadeType.PERSIST)
+  private PriceProvider priceProvider;
 }

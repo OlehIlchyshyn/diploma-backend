@@ -8,17 +8,17 @@ import java.util.List;
 @Data
 public class TechDetail {
 
-    private final int id;
+  private final int id;
 
-    private final String type;
+  private final String type;
 
-    private final String title;
+  private final String title;
 
-    @SerializedName("category_id")
-    private final int categoryId;
+  @SerializedName("category_id")
+  private final int categoryId;
 
-    @SerializedName("name")
-    private final String codeName;
+  @SerializedName("name")
+  private final String codeName;
 
-    private final List<DetailValue> values;
+  private final List<DetailValue> values;
 }

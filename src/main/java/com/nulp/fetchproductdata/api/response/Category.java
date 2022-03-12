@@ -10,13 +10,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Category {
 
-    private long id;
+  private long id;
 
-    private String title;
+  private String title;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Category> subCategories;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private List<Category> subCategories;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Product> productList;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private List<Product> productList;
 }

@@ -10,20 +10,21 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProductPriceParser {
 
-    private final String apiLink = "https://www.apple.com/us/shop/mcm/product-price?parts=";
+  private final String apiLink = "https://www.apple.com/us/shop/mcm/product-price?parts=";
 
-    public double getPriceBySku(String sku) {
-        return getPriceFromJson(WebClient.getApiResponse(apiLink + sku));
-    }
+  public double getPriceBySku(String sku) {
+    return getPriceFromJson(WebClient.getApiResponse(apiLink + sku));
+  }
 
-    private double getPriceFromJson(String json) {
-        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-        return jsonObject
-                .getAsJsonObject("items")
-                .entrySet().stream().findFirst().get().getValue()
-                .getAsJsonObject()
-                .getAsJsonObject("price")
-                .getAsJsonPrimitive("value")
-                .getAsDouble();
-    }
+  private double getPriceFromJson(String json) {
+    JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+    return jsonObject.getAsJsonObject("items").entrySet().stream()
+        .findFirst()
+        .get()
+        .getValue()
+        .getAsJsonObject()
+        .getAsJsonObject("price")
+        .getAsJsonPrimitive("value")
+        .getAsDouble();
+  }
 }
