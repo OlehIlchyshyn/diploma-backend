@@ -24,6 +24,7 @@ public class ProductListService {
   private final PriceService priceService;
   private final TechCharacteristicsService techCharacteristicsService;
   private final int bufferSize = 1000;
+  private final int OUTLIERS_PERCENTAGE = 50;
 
   public List<Product> getProductsByCategoryId(long categoryId) {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
@@ -52,11 +53,25 @@ public class ProductListService {
         .collect(Collectors.toList());
   }
 
-  private List<Price> getJoinedList(List<Price> priceList, Price price) {
-    // todo
-    // check if price is too huge in priceList, and delete it if that's the case
-    priceList.add(price);
-    return priceList;
+  private List<Price> getJoinedList(List<Price> priceList, Price rozetkaPrice) {
+    List<Price> priceListWithoutOutliers = removeOutOfRangePrices(priceList, rozetkaPrice);
+    priceListWithoutOutliers.add(rozetkaPrice);
+    return priceListWithoutOutliers;
+  }
+
+  private List<Price> removeOutOfRangePrices(List<Price> priceList, Price rozetkaPrice) {
+    return priceList.stream()
+        .filter(
+            price -> {
+              if (price.getAmount() > rozetkaPrice.getAmount()) {
+                return ((price.getAmount() / rozetkaPrice.getAmount() * 100) - 100)
+                    <= OUTLIERS_PERCENTAGE;
+              } else {
+                return ((rozetkaPrice.getAmount() / price.getAmount() * 100) - 100)
+                    <= OUTLIERS_PERCENTAGE;
+              }
+            })
+        .collect(Collectors.toList());
   }
 
   private Price getPrice(ProductDetails rozetkaProductDetails) {

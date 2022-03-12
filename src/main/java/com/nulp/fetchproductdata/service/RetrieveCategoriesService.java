@@ -28,38 +28,44 @@ public class RetrieveCategoriesService {
   public Catalog getCatalog(
       boolean reindexCategories, boolean includeSubcategories, boolean includeProductList) {
     if (reindexCategories) {
-      List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
-          rootCategories = categoriesParser.fetchCategoriesFromApi();
-
-      // todo remove temporary trim of the categories
-      rootCategories = rootCategories.subList(0, 1);
-
-      for (var rootCategory : rootCategories) {
-        idMapperService.addRozetkaCategoryEntry(
-            rootCategory.getTitle(), rootCategory.getCategoryId());
-        for (var category : rootCategory.getChildren()) {
-          idMapperService.addRozetkaCategoryEntry(category.getTitle(), category.getCategoryId());
-        }
-      }
-
-      List<com.nulp.fetchproductdata.model.Category> categories = mapToModel(rootCategories);
-
-      for (var rootCategory : categories) {
-        List<Product> rootCategoryProducts = new LinkedList<>();
-        for (var category : rootCategory.getSubCategories()) {
-          int subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
-          var subCategoryProducts = productListService.getProductsByCategoryId(subCategoryId);
-          rootCategoryProducts.addAll(subCategoryProducts);
-          category.setProducts(subCategoryProducts);
-        }
-        rootCategory.setProducts(rootCategoryProducts);
-      }
-
       categoryRepository.deleteAll();
+      List<com.nulp.fetchproductdata.model.Category> categories = loadCategoriesAndProducts();
       categoryRepository.saveAll(categories);
+      return new Catalog(mapToResponse(categories));
     }
 
     return new Catalog(mapToResponse(categoryRepository.findAllParentCategories()));
+  }
+
+  private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
+    List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
+        rootCategories = categoriesParser.fetchCategoriesFromApi();
+
+    // todo remove temporary trim of the categories
+    rootCategories = rootCategories.subList(0, 1);
+
+    for (var rootCategory : rootCategories) {
+      idMapperService.addRozetkaCategoryEntry(
+          rootCategory.getTitle(), rootCategory.getCategoryId());
+      for (var category : rootCategory.getChildren()) {
+        idMapperService.addRozetkaCategoryEntry(category.getTitle(), category.getCategoryId());
+      }
+    }
+
+    List<com.nulp.fetchproductdata.model.Category> categories = mapToModel(rootCategories);
+
+    for (var rootCategory : categories) {
+      List<Product> rootCategoryProducts = new LinkedList<>();
+      for (var category : rootCategory.getSubCategories()) {
+        int subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
+        var subCategoryProducts = productListService.getProductsByCategoryId(subCategoryId);
+        rootCategoryProducts.addAll(subCategoryProducts);
+        category.setProducts(subCategoryProducts);
+      }
+      rootCategory.setProducts(rootCategoryProducts);
+    }
+
+    return categories;
   }
 
   private List<com.nulp.fetchproductdata.model.Category> mapToModel(
