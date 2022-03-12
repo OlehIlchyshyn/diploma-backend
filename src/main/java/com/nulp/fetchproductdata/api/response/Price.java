@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.api.response;
 
 import com.nulp.fetchproductdata.common.enumeration.Currency;
+import com.nulp.fetchproductdata.common.enumeration.Status;
 import com.nulp.fetchproductdata.model.PriceProvider;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ public class Price {
 
   private double amount;
 
-  private String status;
+  private Status status;
 
   private String purchaseUrl;
 

@@ -1,9 +1,12 @@
 package com.nulp.fetchproductdata.service.priceprovider;
 
 import com.nulp.fetchproductdata.common.enumeration.Currency;
+import com.nulp.fetchproductdata.common.enumeration.Status;
 import com.nulp.fetchproductdata.model.Price;
 import com.nulp.fetchproductdata.parser.foxtrot.product.FoxtrotProductDataParser;
+import com.nulp.fetchproductdata.parser.foxtrot.product.model.ProductData;
 import com.nulp.fetchproductdata.parser.foxtrot.search.FoxtrotSearchResultsParser;
+import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +19,14 @@ public class FoxtrotPriceProvider implements PriceProvider {
 
   @Override
   public Price getPriceByProductTitle(String title) {
-    com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult foxtrotSearchResult =
+    SearchResult foxtrotSearchResult =
         foxtrotSearchResultsParser.searchByProductTitle(title);
 
     if (!foxtrotSearchResult.isSearchSuccessful()) {
       return null;
     }
 
-    com.nulp.fetchproductdata.parser.foxtrot.product.model.ProductData foxtrotProductData =
+    ProductData foxtrotProductData =
         foxtrotProductDataParser.parseDataFromProductPage(foxtrotSearchResult.getUrl());
 
     if (foxtrotProductData == null) {
@@ -35,7 +38,7 @@ public class FoxtrotPriceProvider implements PriceProvider {
         .amount(foxtrotProductData.getOffers().getPrice())
         .purchaseUrl(foxtrotSearchResult.getUrl())
         .currency(Currency.valueOf(foxtrotProductData.getOffers().getPriceCurrency()))
-        .status(foxtrotProductData.getOffers().getAvailability())
+        .availabilityStatus(Status.getStatus(foxtrotProductData.getOffers().getAvailability()))
         .build();
   }
 

@@ -2,6 +2,7 @@ package com.nulp.fetchproductdata.service;
 
 import com.google.common.collect.Iterables;
 import com.nulp.fetchproductdata.common.enumeration.Currency;
+import com.nulp.fetchproductdata.common.enumeration.Status;
 import com.nulp.fetchproductdata.model.Price;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
@@ -62,7 +63,7 @@ public class ProductListService {
     return Price.builder()
         .amount(rozetkaProductDetails.getPrice())
         .currency(Currency.UAH)
-        .status(rozetkaProductDetails.getStatus())
+        .availabilityStatus(Status.getStatus(rozetkaProductDetails.getSellStatus()))
         .purchaseUrl(rozetkaProductDetails.getHref())
         .priceProvider(getRozetkaPriceProvider())
         .build();
