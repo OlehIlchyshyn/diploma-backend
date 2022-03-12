@@ -24,12 +24,22 @@ public class AlloSearchResultParser {
 
     try {
       Document document = Jsoup.connect(searchQueryUrl).get();
+      if (document.location().contains("products")) {
+        return getSearchResultAsProductPage(document);
+      }
       return parseSearchResultFromHtml(document);
     } catch (IOException e) {
       e.printStackTrace();
     }
 
     return new SearchResult(false);
+  }
+
+  private SearchResult getSearchResultAsProductPage(Document document) {
+    SearchResult searchResult = new SearchResult(true);
+    searchResult.setUrl(document.location());
+    searchResult.setTitle(document.getElementsByClass("p-view__header-title").get(0).text());
+    return searchResult;
   }
 
   private SearchResult parseSearchResultFromHtml(Document htmlDocument) {
