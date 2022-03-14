@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class ProductPriceParser {
+public class AppleProductPriceParser {
 
   private final String apiLink = "https://www.apple.com/us/shop/mcm/product-price?parts=";
 

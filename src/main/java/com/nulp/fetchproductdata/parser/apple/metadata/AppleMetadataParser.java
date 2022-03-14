@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class JsonMetadataParser {
+public class AppleMetadataParser {
 
   private final List<String> links =
       List.of(

@@ -9,22 +9,22 @@ import java.util.Map;
 public class IdMapperService {
 
   // todo: store mapping in a databse
-  private final Map<String, Integer> productTitle = new HashMap<>();
-  private final Map<String, Integer> categoriesTitle = new HashMap<>();
+  private final Map<String, Integer> rozetkaProductIdByTitle = new HashMap<>();
+  private final Map<String, Integer> rozetkaCategoryIdByTitle = new HashMap<>();
 
   public Integer getRozetkaProductIdByTitle(String title) {
-    return productTitle.get(title);
+    return rozetkaProductIdByTitle.get(title);
   }
 
   public void addRozetkaProductEntry(String title, Integer id) {
-    productTitle.put(title, id);
+    rozetkaProductIdByTitle.put(title, id);
   }
 
   public Integer getRozetkaCategoryIdByTitle(String title) {
-    return categoriesTitle.get(title);
+    return rozetkaCategoryIdByTitle.get(title);
   }
 
   public void addRozetkaCategoryEntry(String title, Integer id) {
-    categoriesTitle.put(title, id);
+    rozetkaCategoryIdByTitle.put(title, id);
   }
 }

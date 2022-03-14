@@ -14,7 +14,7 @@ public class Price {
 
   private double amount;
 
-  private Status status;
+  private Status availabilityStatus;
 
   private String purchaseUrl;
 
