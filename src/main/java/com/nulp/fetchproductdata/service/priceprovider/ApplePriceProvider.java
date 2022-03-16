@@ -8,42 +8,48 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ApplePriceProvider implements PriceProvider {
 
-    private final AppleProductPriceParser appleProductPriceParser;
+  private final AppleProductPriceParser appleProductPriceParser;
 
-    @Nullable
-    @Override
-    public Price getPriceByProductTitle(String title) {
-        if (isAppleProductSku(title)) {
-            double price = appleProductPriceParser.getPriceBySku(getSkuFromTitle(title));
-            return Price.builder()
-                    .purchaseUrl("https://www.apple.com/store")
-                    .priceProvider(getPriceProvider())
-                    .availabilityStatus(Status.AVAILABLE)
-                    .amount(price)
-                    .currency(Currency.USD)
-                    .build();
-        }
-        return null;
-    }
+  private final List<String> possibleAppleSkuEnding =
+      List.of("UA/A", "ZM/A", "RS/A", "UL/A", "TY/A", "RU/A", "ZE/A", "RK/A");
 
-    public static com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
-        return com.nulp.fetchproductdata.model.PriceProvider.builder()
-                .name("Apple")
-                .url("https://www.apple.com/")
-                .build();
+  @Nullable
+  @Override
+  public Price getPriceByProductTitle(String title) {
+    if (isAppleProductSku(title)) {
+      double price = appleProductPriceParser.getPriceBySku(getSkuFromTitle(title));
+      return Price.builder()
+          .purchaseUrl("https://www.apple.com/store")
+          .priceProvider(getPriceProvider())
+          .availabilityStatus(Status.AVAILABLE)
+          .amount(price)
+          .currency(Currency.USD)
+          .build();
     }
+    return null;
+  }
 
-    private boolean isAppleProductSku(String title) {
-        return title.length() == 9 && title.contains("UA/A");
-    }
+  public static com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
+    return com.nulp.fetchproductdata.model.PriceProvider.builder()
+        .name("Apple")
+        .url("https://www.apple.com/")
+        .build();
+  }
 
-    private String getSkuFromTitle(String title) {
-        return title.replaceAll("UA/A", "");
+  private boolean isAppleProductSku(String title) {
+    return title.length() == 9 && possibleAppleSkuEnding.stream().anyMatch(title::contains);
+  }
+
+  private String getSkuFromTitle(String title) {
+    for (String ending : possibleAppleSkuEnding) {
+      title = title.replaceAll(ending, "");
     }
+    return title;
+  }
 }
