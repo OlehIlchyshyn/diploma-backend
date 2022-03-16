@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class Category {
   private String title;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private List<Category> subCategories;
+  private Set<Category> subCategories;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private List<Product> productList;

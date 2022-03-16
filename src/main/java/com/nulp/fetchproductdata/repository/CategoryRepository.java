@@ -5,13 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+  @Query(value = "SELECT c FROM Category c LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
+  Set<Category> findAllParentCategories();
+
   @Query(
       value =
-          "SELECT c.id, c.title FROM category c WHERE c.id NOT IN (SELECT sub_categories_id FROM category_sub_categories)",
-      nativeQuery = true)
-  List<Category> findAllParentCategories();
+          "SELECT c FROM Category c JOIN FETCH c.subCategories LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
+  Set<Category> findAllParentCategoriesWithSubcategories();
 }

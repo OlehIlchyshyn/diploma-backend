@@ -2,83 +2,69 @@ package com.nulp.fetchproductdata.service;
 
 import com.nulp.fetchproductdata.api.response.Catalog;
 import com.nulp.fetchproductdata.api.response.Category;
-import com.nulp.fetchproductdata.model.Product;
-import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesParser;
 import com.nulp.fetchproductdata.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RetrieveCategoriesService {
 
-  private final RozetkaCategoriesParser categoriesParser;
   private final CategoryRepository categoryRepository;
-  private final IdMapperService idMapperService;
-  private final ProductListService productListService;
   private final ModelMapper modelMapper;
 
+  /**
+   * Retrieve catalog with categories and subcategories data, excluding the product list.
+   *
+   * @return catalog, consisting of categories and subcategories.
+   */
   @Transactional
-  public Catalog getCatalog(
-      boolean reindexCategories, boolean includeSubcategories, boolean includeProductList) {
-    if (reindexCategories) {
-      categoryRepository.deleteAll();
-      List<com.nulp.fetchproductdata.model.Category> categories = loadCategoriesAndProducts();
-      categoryRepository.saveAll(categories);
-      return new Catalog(mapToResponse(categories));
-    }
-
+  public Catalog getFullCatalog() {
     return new Catalog(mapToResponse(categoryRepository.findAllParentCategories()));
   }
 
-  private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
-    List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
-        rootCategories = categoriesParser.fetchCategoriesFromApi();
-
-    // todo remove temporary trim of the categories
-    rootCategories = rootCategories.subList(0, 1);
-
-    for (var rootCategory : rootCategories) {
-      idMapperService.addRozetkaCategoryEntry(
-          rootCategory.getTitle(), rootCategory.getCategoryId());
-      for (var category : rootCategory.getChildren()) {
-        idMapperService.addRozetkaCategoryEntry(category.getTitle(), category.getCategoryId());
-      }
-    }
-
-    List<com.nulp.fetchproductdata.model.Category> categories = mapToModel(rootCategories);
-
-    for (var rootCategory : categories) {
-      List<Product> rootCategoryProducts = new LinkedList<>();
-      for (var category : rootCategory.getSubCategories()) {
-        int subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
-        var subCategoryProducts = productListService.getProductsByCategoryId(subCategoryId);
-        rootCategoryProducts.addAll(subCategoryProducts);
-        category.setProducts(subCategoryProducts);
-      }
-      rootCategory.setProducts(rootCategoryProducts);
-    }
-
-    return categories;
+  /**
+   * Retrieve catalog with categories and subcategories data, excluding the product list.
+   *
+   * @return catalog, consisting of categories and subcategories.
+   */
+  public Catalog getSimpleCatalog() {
+    return new Catalog(
+        mapToResponseWithoutProductData(
+            categoryRepository.findAllParentCategoriesWithSubcategories()));
   }
 
-  private List<com.nulp.fetchproductdata.model.Category> mapToModel(
-      List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
-          rootCategories) {
-    return rootCategories.stream()
-        .map(category -> modelMapper.map(category, com.nulp.fetchproductdata.model.Category.class))
-        .collect(Collectors.toList());
-  }
-
-  private List<Category> mapToResponse(List<com.nulp.fetchproductdata.model.Category> categories) {
+  private Set<Category> mapToResponse(Set<com.nulp.fetchproductdata.model.Category> categories) {
     return categories.stream()
         .map(category -> modelMapper.map(category, Category.class))
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
+  }
+
+  private Set<Category> mapToResponseWithoutProductData(
+      Set<com.nulp.fetchproductdata.model.Category> categories) {
+    return categories.stream()
+        .map(
+            category -> {
+              Category categoryResponse = new Category();
+              categoryResponse.setId(category.getId());
+              categoryResponse.setTitle(category.getTitle());
+              categoryResponse.setSubCategories(
+                  category.getSubCategories().stream()
+                      .map(
+                          subcategory -> {
+                            Category subcategoryResponse = new Category();
+                            subcategoryResponse.setId(subcategory.getId());
+                            subcategoryResponse.setTitle(subcategory.getTitle());
+                            return subcategoryResponse;
+                          })
+                      .collect(Collectors.toSet()));
+              return categoryResponse;
+            })
+        .collect(Collectors.toSet());
   }
 }

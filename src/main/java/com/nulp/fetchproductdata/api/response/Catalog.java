@@ -2,9 +2,9 @@ package com.nulp.fetchproductdata.api.response;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class Catalog {
-  private final List<Category> categoryList;
+  private final Set<Category> categoryList;
 }
