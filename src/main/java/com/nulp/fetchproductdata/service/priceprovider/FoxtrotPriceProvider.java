@@ -19,8 +19,7 @@ public class FoxtrotPriceProvider implements PriceProvider {
 
   @Override
   public Price getPriceByProductTitle(String title) {
-    SearchResult foxtrotSearchResult =
-        foxtrotSearchResultsParser.searchByProductTitle(title);
+    SearchResult foxtrotSearchResult = foxtrotSearchResultsParser.searchByProductTitle(title);
 
     if (!foxtrotSearchResult.isSearchSuccessful()) {
       return null;

@@ -49,7 +49,8 @@ public class FoxtrotSearchResultsParser {
   }
 
   private boolean isNoMatchFound(Document document) {
-    return !document.getElementsByClass("search-page__box-title").isEmpty() && document.getElementsByClass("search-page__box-title").text().contains("не знайдено");
+    return !document.getElementsByClass("search-page__box-title").isEmpty()
+        && document.getElementsByClass("search-page__box-title").text().contains("не знайдено");
   }
 
   private SearchResult parseSearchResultFromHtml(Document htmlDocument) {
