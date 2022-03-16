@@ -39,7 +39,8 @@ public class RozetkaProductListService {
             .flatMap(List::stream)
             .collect(Collectors.toList());
 
-    productDetailsList.forEach(product -> idMapperService.addRozetkaProductEntry(product.getTitle(), product.getId()));
+    productDetailsList.forEach(
+        product -> idMapperService.addRozetkaProductEntry(product.getTitle(), product.getId()));
 
     return productDetailsList.stream()
         .map(
@@ -48,9 +49,9 @@ public class RozetkaProductListService {
                     .fullName(productDetails.getTitle())
                     .description(productDetails.getDescription())
                     .priceList(
-                            priceUtils.getJoinedList(
-                                    priceService.getPriceByProductTitle(productDetails.getTitle()),
-                                    getPrice(productDetails)))
+                        priceUtils.getJoinedList(
+                            priceService.getPriceByProductTitle(productDetails.getTitle()),
+                            getPrice(productDetails)))
                     .techSpecs(
                         techCharacteristicsService.getTechCharacteristicsByProductId(
                             productDetails.getId()))
