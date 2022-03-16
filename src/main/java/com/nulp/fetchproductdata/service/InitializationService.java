@@ -18,7 +18,7 @@ public class InitializationService {
 
   private final RozetkaCategoriesParser categoriesParser;
   private final IdMapperService idMapperService;
-  private final ProductListService productListService;
+  private final RozetkaProductListService rozetkaProductListService;
   private final CategoryRepository categoryRepository;
   private final ModelMapper modelMapper;
 
@@ -50,7 +50,7 @@ public class InitializationService {
       List<Product> rootCategoryProducts = new LinkedList<>();
       for (var category : rootCategory.getSubCategories()) {
         int subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
-        var subCategoryProducts = productListService.getProductsByCategoryId(subCategoryId);
+        var subCategoryProducts = rozetkaProductListService.getProductsByCategoryId(subCategoryId);
         rootCategoryProducts.addAll(subCategoryProducts);
         category.setProducts(subCategoryProducts);
       }
