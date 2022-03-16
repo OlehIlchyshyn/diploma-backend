@@ -63,12 +63,18 @@ public class ProductListService {
     return priceList.stream()
         .filter(
             price -> {
-              if (price.getAmount() > rozetkaPrice.getAmount()) {
-                return ((price.getAmount() / rozetkaPrice.getAmount() * 100) - 100)
-                    <= OUTLIERS_PERCENTAGE;
+              // todo make currency conversion and check whether the value is outlier AFTER this
+              // conversion
+              if (price.getCurrency() == Currency.USD || price.getCurrency() == Currency.EUR) {
+                return true;
               } else {
-                return ((rozetkaPrice.getAmount() / price.getAmount() * 100) - 100)
-                    <= OUTLIERS_PERCENTAGE;
+                if (price.getAmount() > rozetkaPrice.getAmount()) {
+                  return ((price.getAmount() / rozetkaPrice.getAmount() * 100) - 100)
+                      <= OUTLIERS_PERCENTAGE;
+                } else {
+                  return ((rozetkaPrice.getAmount() / price.getAmount() * 100) - 100)
+                      <= OUTLIERS_PERCENTAGE;
+                }
               }
             })
         .collect(Collectors.toList());
