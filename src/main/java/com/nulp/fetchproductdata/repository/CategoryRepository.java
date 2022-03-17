@@ -10,11 +10,10 @@ import java.util.Set;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-  @Query(value = "SELECT c FROM Category c LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
+  @Query("SELECT c FROM Category c LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
   Set<Category> findAllParentCategories();
 
   @Query(
-      value =
-          "SELECT c FROM Category c JOIN FETCH c.subCategories LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
+      "SELECT c FROM Category c JOIN FETCH c.subCategories LEFT JOIN FETCH c.parent WHERE c.parent IS NULL")
   Set<Category> findAllParentCategoriesWithSubcategories();
 }
