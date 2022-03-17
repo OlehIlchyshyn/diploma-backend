@@ -20,13 +20,26 @@ public class InitializationService {
   private final IdMapperService idMapperService;
   private final RozetkaProductListService rozetkaProductListService;
   private final CategoryRepository categoryRepository;
+  private final PriceHistoryService priceHistoryService;
   private final ModelMapper modelMapper;
 
   public List<Category> initCategories() {
     categoryRepository.deleteAll();
     List<Category> categories = loadCategoriesAndProducts();
     categoryRepository.saveAll(categories);
+    savePricesToHistory(categories);
     return categories;
+  }
+
+  private void savePricesToHistory(List<Category> categories) {
+    categories.forEach(
+        category ->
+            category
+                .getProducts()
+                .forEach(
+                    product ->
+                        priceHistoryService.addEntryToPriceHistory(
+                            product.getId(), product.getPriceList())));
   }
 
   private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {

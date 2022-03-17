@@ -34,8 +34,7 @@ public class UpdatePriceService {
     List<Price> joinedPriceList = priceUtils.getJoinedList(updatedPrices, rozetkaPrice);
     product.setPriceList(joinedPriceList);
 
-    // todo save to history
-    // priceHistoryService.addPriceHistoryEntry(product, joinedPriceList)
+    priceHistoryService.addEntryToPriceHistory(product.getId(), joinedPriceList);
 
     return product;
   }

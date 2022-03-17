@@ -32,7 +32,7 @@ public class RozetkaProductListService {
   public List<Product> getProductsByCategoryId(long categoryId) {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
     // TODO: remove sublist
-    productIds = productIds.subList(0, 3);
+    productIds = productIds.subList(0, 1);
     List<ProductDetails> productDetailsList =
         StreamSupport.stream(Iterables.partition(productIds, BUFFER_SIZE).spliterator(), false)
             .map(productDetailsParser::getProductDetailsByProductId)
