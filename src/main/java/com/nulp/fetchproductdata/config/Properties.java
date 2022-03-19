@@ -1,5 +1,6 @@
 package com.nulp.fetchproductdata.config;
 
+import com.nulp.fetchproductdata.common.enumeration.Currency;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -15,4 +16,7 @@ public class Properties {
 
   @Value("${limits.productPerSubCategory:#{null}}")
   private Integer productPerSubCategoryLimit;
+
+  @Value("${preferredCurrency:UAH}")
+  private Currency preferredCurrency;
 }
