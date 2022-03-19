@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class Price {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
   @Enumerated(EnumType.STRING)
@@ -30,6 +30,6 @@ public class Price {
 
   private String purchaseUrl;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   private PriceProvider priceProvider;
 }

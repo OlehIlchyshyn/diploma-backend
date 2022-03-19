@@ -5,7 +5,6 @@ import com.nulp.fetchproductdata.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +17,9 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final ModelMapper modelMapper;
 
-  @Transactional
   public Product getProductById(Long productId) {
     Optional<com.nulp.fetchproductdata.model.Product> productOptional =
-        productRepository.findById(productId);
+        productRepository.findProductById(productId);
     if (productOptional.isEmpty()) {
       return null;
     } else {

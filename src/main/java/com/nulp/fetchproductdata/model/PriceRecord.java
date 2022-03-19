@@ -22,6 +22,6 @@ public class PriceRecord {
 
   private Date date;
 
-  @OneToMany(fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
   private List<Price> priceList;
 }

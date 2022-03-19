@@ -21,12 +21,8 @@ import java.util.Map;
 public class Product {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
-
-  //    private String brand;
-
-  //    private String model;
 
   private String fullName;
 

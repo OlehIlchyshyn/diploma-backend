@@ -12,10 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,16 +29,19 @@ public class PriceHistoryService {
     return mapToResponse(priceHistoryRepository.getPriceHistoryByProductId(productId));
   }
 
+  @Transactional
   public void addEntryToPriceHistory(
       long productId, List<com.nulp.fetchproductdata.model.Price> updatedPrices) {
-    Product product = productRepository.findById(productId).orElse(null);
+    List<com.nulp.fetchproductdata.model.Price> mutableCopy = new ArrayList<>(updatedPrices);
+    Product product = productRepository.findProductById(productId).orElse(null);
+
     if (product == null) {
-      log.error("Product with id=" + productId + " does not exists");
+      log.error("Product with id:" + productId + " does not exists");
       return;
     }
 
     PriceRecord newRecord =
-        PriceRecord.builder().date(getRecordDate()).priceList(updatedPrices).build();
+        PriceRecord.builder().date(getRecordDate()).priceList(mutableCopy).build();
 
     com.nulp.fetchproductdata.model.PriceHistory priceHistory =
         priceHistoryRepository.getPriceHistoryByProductId(productId);
@@ -55,6 +55,11 @@ public class PriceHistoryService {
       priceHistory.addPriceRecord(newRecord);
     }
     priceHistoryRepository.save(priceHistory);
+
+    // updating product as hibernate deletes previous price list, as it is referenced
+    // by both history and actual product object
+    product.setPriceList(mutableCopy);
+    productRepository.save(product);
   }
 
   private Date getRecordDate() {
