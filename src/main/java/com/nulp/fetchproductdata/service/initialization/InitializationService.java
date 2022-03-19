@@ -68,6 +68,9 @@ public class InitializationService {
         var subCategoryProducts = rozetkaProductListService.getProductsByCategoryId(subCategoryId);
         rootCategoryProducts.addAll(subCategoryProducts);
         category.setProducts(subCategoryProducts);
+
+        // flatten the hierarchy to two levels
+        category.setSubCategories(null);
       }
       rootCategory.setProducts(rootCategoryProducts);
     }
