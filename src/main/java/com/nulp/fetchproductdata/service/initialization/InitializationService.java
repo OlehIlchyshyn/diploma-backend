@@ -2,9 +2,12 @@ package com.nulp.fetchproductdata.service.initialization;
 
 import com.nulp.fetchproductdata.config.Properties;
 import com.nulp.fetchproductdata.model.Category;
+import com.nulp.fetchproductdata.model.ConversionRate;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesParser;
 import com.nulp.fetchproductdata.repository.CategoryRepository;
+import com.nulp.fetchproductdata.repository.ConversionRateRepository;
+import com.nulp.fetchproductdata.service.ConversionService;
 import com.nulp.fetchproductdata.service.IdMapperService;
 import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ public class InitializationService {
   private final RozetkaProductListService rozetkaProductListService;
   private final CategoryRepository categoryRepository;
   private final PriceHistoryService priceHistoryService;
+  private final ConversionService conversionService;
+  private final ConversionRateRepository conversionRateRepository;
   private final ModelMapper modelMapper;
   private final Properties properties;
 
@@ -33,6 +38,13 @@ public class InitializationService {
     categoryRepository.saveAll(categories);
     savePricesToHistory(categories);
     return categories;
+  }
+
+  public List<ConversionRate> initConversionRates() {
+    conversionRateRepository.deleteAll();
+    List<ConversionRate> conversionRates = conversionService.getAllRates();
+    conversionRateRepository.saveAll(conversionRates);
+    return conversionRates;
   }
 
   private void savePricesToHistory(List<Category> categories) {

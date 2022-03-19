@@ -37,7 +37,7 @@ public class RozetkaProductListService {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
 
     if (properties.getProductPerSubCategoryLimit() != null) {
-      productIds.subList(0, properties.getProductPerSubCategoryLimit());
+      productIds = productIds.subList(0, properties.getProductPerSubCategoryLimit());
     }
 
     List<ProductDetails> productDetailsList =

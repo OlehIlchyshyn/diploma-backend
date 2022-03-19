@@ -14,6 +14,7 @@ public class InitializationRunner implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
+    initializationService.initConversionRates();
     initializationService.initCategories();
   }
 }
