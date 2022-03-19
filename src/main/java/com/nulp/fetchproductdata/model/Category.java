@@ -25,7 +25,6 @@ public class Category {
   @ToString.Exclude
   private Set<Category> subCategories;
 
-  // todo revisit need of cascading here
   @ManyToMany(cascade = CascadeType.PERSIST)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
