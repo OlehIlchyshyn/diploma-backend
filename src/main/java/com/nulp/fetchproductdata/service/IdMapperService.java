@@ -8,7 +8,6 @@ import java.util.Map;
 @Service
 public class IdMapperService {
 
-  // todo: store mapping in a databse
   private final Map<String, Integer> rozetkaProductIdByTitle = new HashMap<>();
   private final Map<String, Integer> rozetkaCategoryIdByTitle = new HashMap<>();
 
