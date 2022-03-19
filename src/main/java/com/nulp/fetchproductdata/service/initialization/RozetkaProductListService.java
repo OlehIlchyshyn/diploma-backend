@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.nulp.fetchproductdata.common.PriceUtils;
 import com.nulp.fetchproductdata.common.enumeration.Currency;
 import com.nulp.fetchproductdata.common.enumeration.Status;
+import com.nulp.fetchproductdata.config.Properties;
 import com.nulp.fetchproductdata.model.Price;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
@@ -28,13 +29,17 @@ public class RozetkaProductListService {
   private final TechCharacteristicsService techCharacteristicsService;
   private final IdMapperService idMapperService;
   private final PriceUtils priceUtils;
+  private final Properties properties;
 
   private final int BUFFER_SIZE = 1000;
 
   public List<Product> getProductsByCategoryId(long categoryId) {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
-    // TODO: remove sublist
-    productIds = productIds.subList(0, 1);
+
+    if (properties.getProductPerSubCategoryLimit() != null) {
+      productIds.subList(0, properties.getProductPerSubCategoryLimit());
+    }
+
     List<ProductDetails> productDetailsList =
         StreamSupport.stream(Iterables.partition(productIds, BUFFER_SIZE).spliterator(), false)
             .map(productDetailsParser::getProductDetailsByProductId)

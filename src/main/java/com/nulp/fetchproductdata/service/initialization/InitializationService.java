@@ -1,5 +1,6 @@
 package com.nulp.fetchproductdata.service.initialization;
 
+import com.nulp.fetchproductdata.config.Properties;
 import com.nulp.fetchproductdata.model.Category;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesParser;
@@ -24,6 +25,7 @@ public class InitializationService {
   private final CategoryRepository categoryRepository;
   private final PriceHistoryService priceHistoryService;
   private final ModelMapper modelMapper;
+  private final Properties properties;
 
   public List<Category> initCategories() {
     categoryRepository.deleteAll();
@@ -48,8 +50,9 @@ public class InitializationService {
     List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
         rootCategories = categoriesParser.fetchCategoriesFromApi();
 
-    // todo remove temporary trim of the categories
-    rootCategories = rootCategories.subList(0, 1);
+    if (properties.getCategoriesLimit() != null) {
+      rootCategories = rootCategories.subList(0, properties.getCategoriesLimit());
+    }
 
     for (var rootCategory : rootCategories) {
       idMapperService.addRozetkaCategoryEntry(
