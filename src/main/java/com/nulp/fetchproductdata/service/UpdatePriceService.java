@@ -6,15 +6,17 @@ import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.model.ProductDetails;
 import com.nulp.fetchproductdata.repository.ProductRepository;
+import com.nulp.fetchproductdata.service.initialization.RozetkaProductListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UpdatePriceService {
 
   private final ProductRepository productRepository;
@@ -24,9 +26,12 @@ public class UpdatePriceService {
   private final RozetkaProductDetailsParser rozetkaProductDetailsParser;
   private final PriceUtils priceUtils;
 
-  @Transactional
-  public Product updatePrices(long productId) {
-    Product product = productRepository.getById(productId);
+  public void updatePrices(long productId) {
+    Product product = productRepository.findProductById(productId).orElse(null);
+    if (product == null) {
+      log.warn("Product with given id:" + productId + " doesn't exists");
+      return;
+    }
 
     List<Price> updatedPrices = priceService.getPriceByProductTitle(product.getFullName());
     Price rozetkaPrice = getRozetkaPrice(product.getFullName());
@@ -35,8 +40,6 @@ public class UpdatePriceService {
     product.setPriceList(joinedPriceList);
 
     priceHistoryService.addEntryToPriceHistory(product.getId(), joinedPriceList);
-
-    return product;
   }
 
   private Price getRozetkaPrice(String title) {

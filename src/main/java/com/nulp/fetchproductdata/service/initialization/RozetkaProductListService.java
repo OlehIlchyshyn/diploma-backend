@@ -1,4 +1,4 @@
-package com.nulp.fetchproductdata.service;
+package com.nulp.fetchproductdata.service.initialization;
 
 import com.google.common.collect.Iterables;
 import com.nulp.fetchproductdata.common.PriceUtils;
@@ -9,6 +9,8 @@ import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.model.ProductDetails;
 import com.nulp.fetchproductdata.parser.rozetka.products.ids.RozetkaProductIdsParser;
+import com.nulp.fetchproductdata.service.IdMapperService;
+import com.nulp.fetchproductdata.service.PriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

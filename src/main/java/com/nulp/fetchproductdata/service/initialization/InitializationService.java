@@ -1,9 +1,11 @@
-package com.nulp.fetchproductdata.service;
+package com.nulp.fetchproductdata.service.initialization;
 
 import com.nulp.fetchproductdata.model.Category;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesParser;
 import com.nulp.fetchproductdata.repository.CategoryRepository;
+import com.nulp.fetchproductdata.service.IdMapperService;
+import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

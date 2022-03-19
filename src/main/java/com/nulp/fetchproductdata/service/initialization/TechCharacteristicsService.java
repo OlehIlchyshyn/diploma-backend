@@ -1,4 +1,4 @@
-package com.nulp.fetchproductdata.service;
+package com.nulp.fetchproductdata.service.initialization;
 
 import com.nulp.fetchproductdata.parser.rozetka.products.specs.RozetkaTechCharacteristicsParser;
 import com.nulp.fetchproductdata.parser.rozetka.products.specs.model.TechCharacteristics;

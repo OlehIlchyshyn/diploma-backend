@@ -2,8 +2,8 @@ package com.nulp.fetchproductdata.controllers;
 
 import com.nulp.fetchproductdata.api.CatalogApi;
 import com.nulp.fetchproductdata.api.response.Catalog;
-import com.nulp.fetchproductdata.service.InitializationService;
 import com.nulp.fetchproductdata.service.RetrieveCategoriesService;
+import com.nulp.fetchproductdata.service.initialization.InitializationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 

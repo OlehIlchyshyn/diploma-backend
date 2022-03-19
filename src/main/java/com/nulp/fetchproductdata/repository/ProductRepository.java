@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+  @Query("SELECT p FROM Product p JOIN FETCH p.priceList WHERE p.id = :productId")
+  Optional<Product> findProductById(Long productId);
 
   @Query("SELECT c.products FROM Category c WHERE c.id=:categoryId")
   List<Product> findProductsByCategoryId(Long categoryId);
