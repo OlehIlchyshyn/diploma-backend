@@ -22,4 +22,10 @@ public class Properties {
 
   @Value("${limits.outliersPercentage:50}")
   private double outliersPercentage;
+
+  @Value("${startup.initCategories: false}")
+  private boolean initCategories;
+
+  @Value("${startup.initRates: false}")
+  private boolean initConversionRates;
 }
