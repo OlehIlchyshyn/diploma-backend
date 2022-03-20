@@ -19,4 +19,7 @@ public class Properties {
 
   @Value("${preferredCurrency:UAH}")
   private Currency preferredCurrency;
+
+  @Value("${limits.outliersPercentage:50}")
+  private double outliersPercentage;
 }

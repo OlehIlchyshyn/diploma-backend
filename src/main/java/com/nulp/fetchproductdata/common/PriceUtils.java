@@ -17,8 +17,6 @@ public class PriceUtils {
   private final ConversionService conversionService;
   private final Properties properties;
 
-  public final int OUTLIERS_PERCENTAGE = 50;
-
   public List<Price> getJoinedList(List<Price> priceList, Price rozetkaPrice) {
     List<Price> priceListWithoutOutliers = removeOutOfRangePrices(priceList, rozetkaPrice);
     priceListWithoutOutliers.add(rozetkaPrice);
@@ -27,29 +25,31 @@ public class PriceUtils {
 
   public List<Price> removeOutOfRangePrices(List<Price> priceList, Price rozetkaPrice) {
     Currency desiredCurrency = properties.getPreferredCurrency();
-    if (rozetkaPrice.getCurrency() != properties.getPreferredCurrency()) {
-      rozetkaPrice.setAmount(
-          conversionService.convert(
-              rozetkaPrice.getCurrency(), desiredCurrency, rozetkaPrice.getAmount()));
-      rozetkaPrice.setCurrency(desiredCurrency);
-    }
+    convertToDesiredCurrency(rozetkaPrice, desiredCurrency);
     return priceList.stream()
         .filter(
             price -> {
-              if (price.getCurrency() != properties.getPreferredCurrency()) {
-                price.setAmount(
-                    conversionService.convert(
-                        price.getCurrency(), desiredCurrency, price.getAmount()));
-                price.setCurrency(desiredCurrency);
-              }
-              if (price.getAmount() > rozetkaPrice.getAmount()) {
-                return ((price.getAmount() / rozetkaPrice.getAmount() * 100) - 100)
-                    <= OUTLIERS_PERCENTAGE;
-              } else {
-                return ((rozetkaPrice.getAmount() / price.getAmount() * 100) - 100)
-                    <= OUTLIERS_PERCENTAGE;
-              }
+              convertToDesiredCurrency(price, desiredCurrency);
+              return isPriceNotTooDifferentFromRozetka(price, rozetkaPrice);
             })
         .collect(Collectors.toList());
+  }
+
+  private boolean isPriceNotTooDifferentFromRozetka(Price price, Price rozetkaPrice) {
+    if (price.getAmount() > rozetkaPrice.getAmount()) {
+      return ((price.getAmount() / rozetkaPrice.getAmount() * 100) - 100)
+          <= properties.getOutliersPercentage();
+    } else {
+      return ((rozetkaPrice.getAmount() / price.getAmount() * 100) - 100)
+          <= properties.getOutliersPercentage();
+    }
+  }
+
+  private void convertToDesiredCurrency(Price price, Currency desiredCurrency) {
+    if (price.getCurrency() != properties.getPreferredCurrency()) {
+      price.setAmount(
+          conversionService.convert(price.getCurrency(), desiredCurrency, price.getAmount()));
+      price.setCurrency(desiredCurrency);
+    }
   }
 }
