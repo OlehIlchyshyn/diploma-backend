@@ -5,6 +5,7 @@ import com.nulp.fetchproductdata.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +28,18 @@ public class ProductService {
     }
   }
 
+  @Transactional
   public List<Product> getProductsByCategory(Long categoryId) {
-    return mapToResponse(productRepository.findProductsByCategoryId(categoryId));
+    return productRepository.findProductsByCategoryId(categoryId).stream()
+        .map(this::mapToResponse)
+        .collect(Collectors.toList());
   }
 
+  @Transactional
   public List<Product> getAllProducts() {
-    return mapToResponse(productRepository.findAll());
+    return productRepository.findAll().stream()
+        .map(this::mapToResponse)
+        .collect(Collectors.toList());
   }
 
   private Product mapToResponse(com.nulp.fetchproductdata.model.Product productModel) {

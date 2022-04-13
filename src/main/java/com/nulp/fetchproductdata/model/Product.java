@@ -35,4 +35,6 @@ public class Product {
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<Price> priceList;
+
+  private String imageUrl;
 }

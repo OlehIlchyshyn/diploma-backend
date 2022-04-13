@@ -55,6 +55,7 @@ public class RozetkaProductListService {
                 Product.builder()
                     .fullName(productDetails.getTitle())
                     .description(productDetails.getDescription())
+                    .imageUrl(productDetails.getMainImageLink())
                     .priceList(
                         priceUtils.getJoinedList(
                             priceService.getPriceByProductTitle(productDetails.getTitle()),
