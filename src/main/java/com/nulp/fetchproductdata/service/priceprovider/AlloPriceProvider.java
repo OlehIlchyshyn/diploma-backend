@@ -7,6 +7,7 @@ import com.nulp.fetchproductdata.parser.allo.product.AlloProductDataParser;
 import com.nulp.fetchproductdata.parser.allo.product.model.ProductData;
 import com.nulp.fetchproductdata.parser.allo.search.AlloSearchResultParser;
 import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
+import com.nulp.fetchproductdata.repository.ProviderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class AlloPriceProvider implements PriceProvider {
 
   private final AlloSearchResultParser alloSearchResultParser;
   private final AlloProductDataParser alloProductDataParser;
+  private final ProviderRepository providerRepository;
 
   @Nullable
   @Override
@@ -42,10 +44,16 @@ public class AlloPriceProvider implements PriceProvider {
         .build();
   }
 
-  public static com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
+  private com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
+    return providerRepository.getPriceProviderByName("Allo");
+  }
+
+  public static com.nulp.fetchproductdata.model.PriceProvider priceProvider() {
     return com.nulp.fetchproductdata.model.PriceProvider.builder()
         .name("Allo")
         .url("https://allo.ua/")
+        .logoUrl(
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Ukrainian_Allo_logo.svg/2560px-Ukrainian_Allo_logo.svg.png")
         .build();
   }
 }

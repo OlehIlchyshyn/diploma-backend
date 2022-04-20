@@ -7,6 +7,7 @@ import com.nulp.fetchproductdata.parser.foxtrot.product.FoxtrotProductDataParser
 import com.nulp.fetchproductdata.parser.foxtrot.product.model.ProductData;
 import com.nulp.fetchproductdata.parser.foxtrot.search.FoxtrotSearchResultsParser;
 import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
+import com.nulp.fetchproductdata.repository.ProviderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class FoxtrotPriceProvider implements PriceProvider {
 
   private final FoxtrotProductDataParser foxtrotProductDataParser;
   private final FoxtrotSearchResultsParser foxtrotSearchResultsParser;
+  private final ProviderRepository providerRepository;
 
   @Override
   public Price getPriceByProductTitle(String title) {
@@ -41,10 +43,15 @@ public class FoxtrotPriceProvider implements PriceProvider {
         .build();
   }
 
-  public static com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
+  private com.nulp.fetchproductdata.model.PriceProvider getPriceProvider() {
+    return providerRepository.getPriceProviderByName("Foxtrot");
+  }
+
+  public static com.nulp.fetchproductdata.model.PriceProvider priceProvider() {
     return com.nulp.fetchproductdata.model.PriceProvider.builder()
         .name("Foxtrot")
         .url("https://www.foxtrot.com.ua/uk")
+        .logoUrl("https://macaroncms.s3.eu-central-1.amazonaws.com/UploadsCatalog/foxtrot.png")
         .build();
   }
 }

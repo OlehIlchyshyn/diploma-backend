@@ -10,11 +10,13 @@ import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.model.ProductDetails;
 import com.nulp.fetchproductdata.parser.rozetka.products.ids.RozetkaProductIdsParser;
+import com.nulp.fetchproductdata.repository.ProviderRepository;
 import com.nulp.fetchproductdata.service.IdMapperService;
 import com.nulp.fetchproductdata.service.PriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -28,6 +30,7 @@ public class RozetkaProductListService {
   private final PriceService priceService;
   private final TechCharacteristicsService techCharacteristicsService;
   private final IdMapperService idMapperService;
+  private final ProviderRepository providerRepository;
   private final PriceUtils priceUtils;
   private final Properties properties;
 
@@ -36,8 +39,14 @@ public class RozetkaProductListService {
   public List<Product> getProductsByCategoryId(long categoryId) {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
 
+    if (productIds.isEmpty()) {
+      return Collections.emptyList();
+    }
+
     if (properties.getProductPerSubCategoryLimit() != null) {
-      productIds = productIds.subList(0, properties.getProductPerSubCategoryLimit());
+      if (properties.getProductPerSubCategoryLimit() <= productIds.size()) {
+        productIds = productIds.subList(0, properties.getProductPerSubCategoryLimit());
+      }
     }
 
     List<ProductDetails> productDetailsList =
@@ -67,7 +76,7 @@ public class RozetkaProductListService {
         .collect(Collectors.toList());
   }
 
-  public static Price getPrice(ProductDetails rozetkaProductDetails) {
+  public Price getPrice(ProductDetails rozetkaProductDetails) {
     return Price.builder()
         .amount(rozetkaProductDetails.getPrice())
         .currency(Currency.UAH)
@@ -77,10 +86,15 @@ public class RozetkaProductListService {
         .build();
   }
 
-  public static com.nulp.fetchproductdata.model.PriceProvider getRozetkaPriceProvider() {
+  public com.nulp.fetchproductdata.model.PriceProvider getRozetkaPriceProvider() {
+    return providerRepository.getPriceProviderByName("Rozetka");
+  }
+
+  public static com.nulp.fetchproductdata.model.PriceProvider priceProvider() {
     return com.nulp.fetchproductdata.model.PriceProvider.builder()
         .name("Rozetka")
         .url("https://rozetka.com.ua/ua/")
+        .logoUrl("https://xl-static.rozetka.com.ua/assets/img/main/rozetka.png")
         .build();
   }
 }

@@ -13,6 +13,7 @@ import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InitializationService {
 
+  private final InitPriceProvidersService initProvidersService;
   private final RozetkaCategoriesParser categoriesParser;
   private final IdMapperService idMapperService;
   private final RozetkaProductListService rozetkaProductListService;
@@ -32,8 +34,10 @@ public class InitializationService {
   private final ModelMapper modelMapper;
   private final Properties properties;
 
+  @Transactional
   public List<Category> initCategories() {
     categoryRepository.deleteAll();
+    initProvidersService.initProviders();
     List<Category> categories = loadCategoriesAndProducts();
     categoryRepository.saveAll(categories);
     savePricesToHistory(categories);

@@ -24,4 +24,6 @@ public class PriceProvider {
   private String name;
 
   private String url;
+
+  private String logoUrl;
 }

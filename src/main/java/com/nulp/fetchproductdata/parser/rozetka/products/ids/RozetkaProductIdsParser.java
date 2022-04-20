@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.parser.rozetka.products.ids;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nulp.fetchproductdata.common.WebClient;
 import com.nulp.fetchproductdata.parser.rozetka.products.ids.model.IdsResponse;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -73,7 +75,15 @@ public class RozetkaProductIdsParser {
   }
 
   private IdsResponse getProductDataFromJson(String json) {
-    JsonObject dataObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
-    return gson.fromJson(dataObject, IdsResponse.class);
+    try {
+      JsonObject dataObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
+      return gson.fromJson(dataObject, IdsResponse.class);
+    } catch (ClassCastException castException) {
+      JsonArray dataArray = gson.fromJson(json, JsonObject.class).getAsJsonArray("data");
+      if (dataArray.isEmpty()) {
+        return IdsResponse.builder().ids(Collections.emptyList()).count(0).pagesCount(0).build();
+      }
+    }
+    return null;
   }
 }

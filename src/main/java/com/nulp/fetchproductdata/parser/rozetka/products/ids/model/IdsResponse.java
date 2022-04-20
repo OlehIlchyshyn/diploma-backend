@@ -1,11 +1,13 @@
 package com.nulp.fetchproductdata.parser.rozetka.products.ids.model;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class IdsResponse {
 
   private final List<Integer> ids;

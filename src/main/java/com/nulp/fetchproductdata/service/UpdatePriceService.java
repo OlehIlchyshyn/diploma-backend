@@ -24,6 +24,7 @@ public class UpdatePriceService {
   private final PriceHistoryService priceHistoryService;
   private final IdMapperService idMapperService;
   private final RozetkaProductDetailsParser rozetkaProductDetailsParser;
+  private final RozetkaProductListService rozetkaProductListService;
   private final PriceUtils priceUtils;
 
   public void updatePrices(long productId) {
@@ -50,7 +51,7 @@ public class UpdatePriceService {
     if (details.isEmpty()) {
       return null;
     } else {
-      return RozetkaProductListService.getPrice(details.get(0));
+      return rozetkaProductListService.getPrice(details.get(0));
     }
   }
 }
