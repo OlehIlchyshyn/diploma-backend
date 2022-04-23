@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,13 @@ public class UpdatePriceService {
   }
 
   private Price getRozetkaPrice(String title) {
-    int rozetkaId = idMapperService.getRozetkaProductIdByTitle(title);
+    int rozetkaId;
+    try {
+      rozetkaId = idMapperService.getRozetkaProductIdByTitle(title);
+    } catch (NoSuchElementException exception) {
+      log.warn("No rozetka id was found for product title: " + title);
+      return null;
+    }
     List<ProductDetails> details =
         rozetkaProductDetailsParser.getProductDetailsByProductId(
             Collections.singletonList(rozetkaId));

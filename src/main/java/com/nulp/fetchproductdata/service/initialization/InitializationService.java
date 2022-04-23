@@ -11,16 +11,19 @@ import com.nulp.fetchproductdata.repository.ConversionRateRepository;
 import com.nulp.fetchproductdata.service.ConversionService;
 import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class InitializationService {
 
   private final InitPriceProvidersService initProvidersService;
@@ -86,7 +89,13 @@ public class InitializationService {
     for (var rootCategory : categories) {
       List<Product> rootCategoryProducts = new LinkedList<>();
       for (var category : rootCategory.getSubCategories()) {
-        int subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
+        int subCategoryId;
+        try {
+          subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
+        } catch (NoSuchElementException exception) {
+          log.warn("No rozetka id was found for category title: " + category.getTitle());
+          continue;
+        }
         var subCategoryProducts = rozetkaProductListService.getProductsByCategoryId(subCategoryId);
         rootCategoryProducts.addAll(subCategoryProducts);
         category.setProducts(subCategoryProducts);
