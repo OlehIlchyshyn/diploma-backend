@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 @Data
 @Entity
+@Indexed
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +27,7 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
-  private String fullName;
+  @FullTextField private String fullName;
 
   @Column(columnDefinition = "text")
   private String description;

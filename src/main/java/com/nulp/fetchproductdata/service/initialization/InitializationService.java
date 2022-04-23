@@ -70,7 +70,11 @@ public class InitializationService {
   private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
     List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
         rootCategories = categoriesParser.fetchCategoriesFromApi();
-    rootCategories.removeIf(category -> skippedCategories.contains(category.getTitle()));
+    rootCategories.removeIf(
+        category ->
+            skippedCategories.contains(category.getTitle())
+                || category.getChildren().stream()
+                    .anyMatch(subcategory -> skippedCategories.contains(subcategory.getTitle())));
 
     if (properties.getCategoriesLimit() != null) {
       rootCategories = rootCategories.subList(0, properties.getCategoriesLimit());

@@ -7,6 +7,7 @@ import com.nulp.fetchproductdata.service.ConversionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +19,14 @@ public class PriceUtils {
   private final Properties properties;
 
   public List<Price> getJoinedList(List<Price> priceList, Price rozetkaPrice) {
-    List<Price> priceListWithoutOutliers = removeOutOfRangePrices(priceList, rozetkaPrice);
-    priceListWithoutOutliers.add(rozetkaPrice);
-    return priceListWithoutOutliers;
+    if (properties.isFilteringEnabled()) {
+      List<Price> priceListWithoutOutliers = removeOutOfRangePrices(priceList, rozetkaPrice);
+      priceListWithoutOutliers.add(rozetkaPrice);
+      return priceListWithoutOutliers;
+    }
+    List<Price> unfilteredList = new ArrayList<>(priceList);
+    unfilteredList.add(rozetkaPrice);
+    return unfilteredList;
   }
 
   public List<Price> removeOutOfRangePrices(List<Price> priceList, Price rozetkaPrice) {

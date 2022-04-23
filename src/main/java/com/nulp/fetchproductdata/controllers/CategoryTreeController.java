@@ -5,9 +5,11 @@ import com.nulp.fetchproductdata.api.response.Catalog;
 import com.nulp.fetchproductdata.service.RetrieveCategoriesService;
 import com.nulp.fetchproductdata.service.initialization.InitializationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 public class CategoryTreeController implements CatalogApi {
 

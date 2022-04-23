@@ -28,4 +28,10 @@ public class Properties {
 
   @Value("${startup.initRates: false}")
   private boolean initConversionRates;
+
+  @Value("${limits.enableFilteringAndConversion}")
+  private boolean filteringEnabled;
+
+  @Value("${startup.rebuildIndexes}")
+  private boolean rebuildSearchIndexes;
 }

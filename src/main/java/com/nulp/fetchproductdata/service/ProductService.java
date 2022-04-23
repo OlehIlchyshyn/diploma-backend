@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final ProductSearchService productSearchService;
   private final ModelMapper modelMapper;
 
   public Product getProductById(Long productId) {
@@ -38,6 +39,12 @@ public class ProductService {
   @Transactional
   public List<Product> getAllProducts() {
     return productRepository.findAll().stream()
+        .map(this::mapToResponse)
+        .collect(Collectors.toList());
+  }
+
+  public List<Product> findProductsByTitle(String title) {
+    return productSearchService.findProductsByTitle(title).stream()
         .map(this::mapToResponse)
         .collect(Collectors.toList());
   }

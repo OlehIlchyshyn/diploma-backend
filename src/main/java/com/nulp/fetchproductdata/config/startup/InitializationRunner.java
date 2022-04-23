@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.config.startup;
 
 import com.nulp.fetchproductdata.config.Properties;
+import com.nulp.fetchproductdata.service.initialization.InitSearchIndexesService;
 import com.nulp.fetchproductdata.service.initialization.InitializationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class InitializationRunner implements ApplicationRunner {
 
   private final InitializationService initializationService;
+  private final InitSearchIndexesService initSearchIndexesService;
   private final Properties properties;
 
   @Override
@@ -29,6 +31,12 @@ public class InitializationRunner implements ApplicationRunner {
       log.info("Started initializing categories");
       initializationService.initCategories();
       log.info("Finished initializing categories");
+    }
+
+    if (properties.isRebuildSearchIndexes()) {
+      log.info("Started rebuilding search indexes");
+      initSearchIndexesService.initProductIndex();
+      log.info("Finished rebuilding search indexes");
     }
   }
 }
