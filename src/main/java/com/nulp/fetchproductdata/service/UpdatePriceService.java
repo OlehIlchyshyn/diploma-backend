@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.service;
 
 import com.nulp.fetchproductdata.common.PriceUtils;
+import com.nulp.fetchproductdata.mapping.IdMapperService;
 import com.nulp.fetchproductdata.model.Price;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;

@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.service.initialization;
 
 import com.nulp.fetchproductdata.config.Properties;
+import com.nulp.fetchproductdata.mapping.IdMapperService;
 import com.nulp.fetchproductdata.model.Category;
 import com.nulp.fetchproductdata.model.ConversionRate;
 import com.nulp.fetchproductdata.model.Product;
@@ -8,7 +9,6 @@ import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesPars
 import com.nulp.fetchproductdata.repository.CategoryRepository;
 import com.nulp.fetchproductdata.repository.ConversionRateRepository;
 import com.nulp.fetchproductdata.service.ConversionService;
-import com.nulp.fetchproductdata.service.IdMapperService;
 import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,6 +33,8 @@ public class InitializationService {
   private final ConversionRateRepository conversionRateRepository;
   private final ModelMapper modelMapper;
   private final Properties properties;
+
+  private final List<String> skippedCategories = List.of("Знижені в ціні товари");
 
   @Transactional
   public List<Category> initCategories() {
@@ -65,6 +67,7 @@ public class InitializationService {
   private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
     List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
         rootCategories = categoriesParser.fetchCategoriesFromApi();
+    rootCategories.removeIf(category -> skippedCategories.contains(category.getTitle()));
 
     if (properties.getCategoriesLimit() != null) {
       rootCategories = rootCategories.subList(0, properties.getCategoriesLimit());
