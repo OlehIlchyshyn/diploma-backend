@@ -37,7 +37,17 @@ public class InitializationService {
   private final ModelMapper modelMapper;
   private final Properties properties;
 
-  private final List<String> skippedCategories = List.of("Знижені в ціні товари");
+  private final List<String> skippedCategories =
+      List.of("Товари для геймерів", "Знижені в ціні товари", "PlayStation");
+  private final List<String> categoriesWithSubchilds =
+      List.of(
+          "Аксесуари для ноутбуків і ПК",
+          "Комплектуючi",
+          "Аксесуари до мобільних телефонів",
+          "Телевізори та аксесуари",
+          "Фото та відео",
+          "Аудіо та домашні кінотеатри",
+          "Портативна електроніка");
 
   @Transactional
   public List<Category> initCategories() {
@@ -70,12 +80,15 @@ public class InitializationService {
   private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
     List<com.nulp.fetchproductdata.parser.rozetka.categories.model.response.Category>
         rootCategories = categoriesParser.fetchCategoriesFromApi();
-    rootCategories.removeIf(
-        category ->
-            skippedCategories.contains(category.getTitle())
-                || category.getChildren().stream()
-                    .anyMatch(subcategory -> skippedCategories.contains(subcategory.getTitle())));
-
+    rootCategories.removeIf(category -> skippedCategories.contains(category.getTitle()));
+    rootCategories.forEach(
+        category -> {
+          if (category.getChildren() != null && !category.getChildren().isEmpty()) {
+            category
+                .getChildren()
+                .removeIf(subcategory -> skippedCategories.contains(subcategory.getTitle()));
+          }
+        });
     if (properties.getCategoriesLimit() != null) {
       rootCategories = rootCategories.subList(0, properties.getCategoriesLimit());
     }
@@ -85,6 +98,12 @@ public class InitializationService {
           rootCategory.getTitle(), rootCategory.getCategoryId());
       for (var category : rootCategory.getChildren()) {
         idMapperService.addRozetkaCategoryEntry(category.getTitle(), category.getCategoryId());
+        if (categoriesWithSubchilds.contains(category.getTitle())) {
+          for (var subcategory : category.getChildren()) {
+            idMapperService.addRozetkaCategoryEntry(
+                subcategory.getTitle(), subcategory.getCategoryId());
+          }
+        }
       }
     }
 
@@ -93,19 +112,38 @@ public class InitializationService {
     for (var rootCategory : categories) {
       List<Product> rootCategoryProducts = new LinkedList<>();
       for (var category : rootCategory.getSubCategories()) {
-        int subCategoryId;
+        List<Product> categoryProducts = new LinkedList<>();
+        if (categoriesWithSubchilds.contains(category.getTitle())) {
+          for (var subCategory : category.getSubCategories()) {
+            int subCategoryId;
+            try {
+              subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(subCategory.getTitle());
+            } catch (NoSuchElementException exception) {
+              log.warn("No rozetka id was found for category title: " + subCategory.getTitle());
+              continue;
+            }
+            var subCategoryProducts =
+                rozetkaProductListService.getProductsByCategoryId(subCategoryId);
+            subCategory.setProducts(subCategoryProducts);
+            categoryProducts.addAll(subCategoryProducts);
+
+            // stop the hierarchy
+            subCategory.setSubCategories(null);
+          }
+        } else {
+          // flatten the hierarchy to two levels
+          category.setSubCategories(null);
+        }
+        int categoryId;
         try {
-          subCategoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
+          categoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());
         } catch (NoSuchElementException exception) {
           log.warn("No rozetka id was found for category title: " + category.getTitle());
           continue;
         }
-        var subCategoryProducts = rozetkaProductListService.getProductsByCategoryId(subCategoryId);
-        rootCategoryProducts.addAll(subCategoryProducts);
-        category.setProducts(subCategoryProducts);
-
-        // flatten the hierarchy to two levels
-        category.setSubCategories(null);
+        categoryProducts.addAll(rozetkaProductListService.getProductsByCategoryId(categoryId));
+        category.setProducts(categoryProducts);
+        rootCategoryProducts.addAll(categoryProducts);
       }
       rootCategory.setProducts(rootCategoryProducts);
     }

@@ -39,10 +39,17 @@ public class RetrieveCategoriesService {
             categoryRepository.findAllParentCategoriesWithSubcategories()));
   }
 
+  @Transactional
+  public Category getCategoryById(Long categoryId) {
+    return mapToResponse(categoryRepository.getById(categoryId));
+  }
+
+  private Category mapToResponse(com.nulp.fetchproductdata.model.Category category) {
+    return modelMapper.map(category, Category.class);
+  }
+
   private Set<Category> mapToResponse(Set<com.nulp.fetchproductdata.model.Category> categories) {
-    return categories.stream()
-        .map(category -> modelMapper.map(category, Category.class))
-        .collect(Collectors.toSet());
+    return categories.stream().map(this::mapToResponse).collect(Collectors.toSet());
   }
 
   private Set<Category> mapToResponseWithoutProductData(
@@ -60,6 +67,19 @@ public class RetrieveCategoriesService {
                             Category subcategoryResponse = new Category();
                             subcategoryResponse.setId(subcategory.getId());
                             subcategoryResponse.setTitle(subcategory.getTitle());
+                            if (subcategory.getSubCategories() != null) {
+                              subcategoryResponse.setSubCategories(
+                                  subcategory.getSubCategories().stream()
+                                      .map(
+                                          subsubcategory -> {
+                                            Category subsubcategoryResponse = new Category();
+                                            subsubcategoryResponse.setId(subsubcategory.getId());
+                                            subsubcategoryResponse.setTitle(
+                                                subsubcategory.getTitle());
+                                            return subsubcategoryResponse;
+                                          })
+                                      .collect(Collectors.toSet()));
+                            }
                             return subcategoryResponse;
                           })
                       .collect(Collectors.toSet()));

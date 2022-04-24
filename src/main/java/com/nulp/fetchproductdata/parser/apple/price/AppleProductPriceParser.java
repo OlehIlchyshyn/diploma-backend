@@ -12,12 +12,21 @@ public class AppleProductPriceParser {
 
   private final String apiLink = "https://www.apple.com/us/shop/mcm/product-price?parts=";
 
-  public double getPriceBySku(String sku) {
+  public Double getPriceBySku(String sku) {
     return getPriceFromJson(WebClient.getApiResponse(apiLink + sku));
   }
 
-  private double getPriceFromJson(String json) {
+  private Double getPriceFromJson(String json) {
     JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+    if (jsonObject.getAsJsonObject("items").entrySet().stream()
+        .findFirst()
+        .get()
+        .getValue()
+        .getAsJsonObject()
+        .keySet()
+        .contains("type")) {
+      return null;
+    }
     return jsonObject.getAsJsonObject("items").entrySet().stream()
         .findFirst()
         .get()

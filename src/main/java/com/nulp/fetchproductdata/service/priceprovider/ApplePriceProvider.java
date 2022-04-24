@@ -25,7 +25,10 @@ public class ApplePriceProvider implements PriceProvider {
   @Override
   public Price getPriceByProductTitle(String title) {
     if (isAppleProductSku(title)) {
-      double price = appleProductPriceParser.getPriceBySku(getSkuFromTitle(title));
+      Double price = appleProductPriceParser.getPriceBySku(getSkuFromTitle(title));
+      if (price == null) {
+        return null;
+      }
       return Price.builder()
           .purchaseUrl("https://www.apple.com/store")
           .priceProvider(getPriceProvider())
