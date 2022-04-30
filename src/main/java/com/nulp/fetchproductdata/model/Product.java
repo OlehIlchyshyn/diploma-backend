@@ -36,7 +36,7 @@ public class Product {
   @Column(columnDefinition = "jsonb")
   private Map<String, Map<String, String>> techSpecs;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.PERSIST)
   private List<Price> priceList;
 
   private String imageUrl;

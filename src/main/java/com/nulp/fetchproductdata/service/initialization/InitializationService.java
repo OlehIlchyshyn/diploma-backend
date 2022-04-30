@@ -8,6 +8,7 @@ import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.categories.RozetkaCategoriesParser;
 import com.nulp.fetchproductdata.repository.CategoryRepository;
 import com.nulp.fetchproductdata.repository.ConversionRateRepository;
+import com.nulp.fetchproductdata.repository.ProductRepository;
 import com.nulp.fetchproductdata.service.ConversionService;
 import com.nulp.fetchproductdata.service.PriceHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,6 +33,7 @@ public class InitializationService {
   private final IdMapperService idMapperService;
   private final RozetkaProductListService rozetkaProductListService;
   private final CategoryRepository categoryRepository;
+  private final ProductRepository productRepository;
   private final PriceHistoryService priceHistoryService;
   private final ConversionService conversionService;
   private final ConversionRateRepository conversionRateRepository;
@@ -67,14 +70,12 @@ public class InitializationService {
   }
 
   private void savePricesToHistory(List<Category> categories) {
-    categories.forEach(
-        category ->
-            category
-                .getProducts()
-                .forEach(
-                    product ->
-                        priceHistoryService.addEntryToPriceHistory(
-                            product.getId(), product.getPriceList())));
+    productRepository
+        .findAll()
+        .forEach(
+            product ->
+                priceHistoryService.addEntryToPriceHistory(
+                    product.getId(), product.getPriceList()));
   }
 
   private List<com.nulp.fetchproductdata.model.Category> loadCategoriesAndProducts() {
@@ -110,9 +111,9 @@ public class InitializationService {
     List<com.nulp.fetchproductdata.model.Category> categories = mapToModel(rootCategories);
 
     for (var rootCategory : categories) {
-      List<Product> rootCategoryProducts = new LinkedList<>();
+      Set<Product> rootCategoryProducts = new LinkedHashSet<>();
       for (var category : rootCategory.getSubCategories()) {
-        List<Product> categoryProducts = new LinkedList<>();
+        Set<Product> categoryProducts = new LinkedHashSet<>();
         if (categoriesWithSubchilds.contains(category.getTitle())) {
           for (var subCategory : category.getSubCategories()) {
             int subCategoryId;
@@ -134,6 +135,7 @@ public class InitializationService {
           // flatten the hierarchy to two levels
           category.setSubCategories(null);
         }
+
         int categoryId;
         try {
           categoryId = idMapperService.getRozetkaCategoryIdByTitle(category.getTitle());

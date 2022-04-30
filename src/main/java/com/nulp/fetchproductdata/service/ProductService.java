@@ -7,8 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,31 +30,31 @@ public class ProductService {
   }
 
   @Transactional
-  public List<Product> getProductsByCategory(Long categoryId) {
+  public Set<Product> getProductsByCategory(Long categoryId) {
     return productRepository.findProductsByCategoryId(categoryId).stream()
         .map(this::mapToResponse)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 
   @Transactional
-  public List<Product> getAllProducts() {
+  public Set<Product> getAllProducts() {
     return productRepository.findAll().stream()
         .map(this::mapToResponse)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 
-  public List<Product> findProductsByTitle(String title) {
+  public Set<Product> findProductsByTitle(String title) {
     return productSearchService.findProductsByTitle(title).stream()
         .map(this::mapToResponse)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 
   private Product mapToResponse(com.nulp.fetchproductdata.model.Product productModel) {
     return modelMapper.map(productModel, Product.class);
   }
 
-  private List<Product> mapToResponse(
-      List<com.nulp.fetchproductdata.model.Product> productModelList) {
+  private Set<Product> mapToResponse(
+      Set<com.nulp.fetchproductdata.model.Product> productModelList) {
     return productModelList.stream()
         .map(
             productModel -> {
@@ -64,6 +64,6 @@ public class ProductService {
               product.setDescription(productModel.getDescription());
               return product;
             })
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,5 +18,5 @@ public class Category {
   private Set<Category> subCategories;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private List<Product> productList;
+  private Set<Product> productList;
 }

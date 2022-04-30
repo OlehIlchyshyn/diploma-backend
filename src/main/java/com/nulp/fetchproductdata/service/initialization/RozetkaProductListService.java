@@ -11,6 +11,7 @@ import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.RozetkaProductDetailsParser;
 import com.nulp.fetchproductdata.parser.rozetka.products.details.model.ProductDetails;
 import com.nulp.fetchproductdata.parser.rozetka.products.ids.RozetkaProductIdsParser;
+import com.nulp.fetchproductdata.repository.ProductRepository;
 import com.nulp.fetchproductdata.repository.ProviderRepository;
 import com.nulp.fetchproductdata.service.PriceService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -31,16 +33,17 @@ public class RozetkaProductListService {
   private final TechCharacteristicsService techCharacteristicsService;
   private final IdMapperService idMapperService;
   private final ProviderRepository providerRepository;
+  private final ProductRepository productRepository;
   private final PriceUtils priceUtils;
   private final Properties properties;
 
   private final int BUFFER_SIZE = 1000;
 
-  public List<Product> getProductsByCategoryId(long categoryId) {
+  public Set<Product> getProductsByCategoryId(long categoryId) {
     List<Integer> productIds = productIdsParser.getProductIdsByCategory(categoryId);
 
     if (productIds.isEmpty()) {
-      return Collections.emptyList();
+      return Collections.emptySet();
     }
 
     if (properties.getProductPerSubCategoryLimit() != null) {
@@ -58,22 +61,35 @@ public class RozetkaProductListService {
     productDetailsList.forEach(
         product -> idMapperService.addRozetkaProductEntry(product.getTitle(), product.getId()));
 
-    return productDetailsList.stream()
-        .map(
-            productDetails ->
-                Product.builder()
-                    .fullName(productDetails.getTitle())
-                    .description(productDetails.getDescription())
-                    .imageUrl(productDetails.getMainImageLink())
-                    .priceList(
-                        priceUtils.getJoinedList(
-                            priceService.getPriceByProductTitle(productDetails.getTitle()),
-                            getPrice(productDetails)))
-                    .techSpecs(
-                        techCharacteristicsService.getTechCharacteristicsByProductId(
-                            productDetails.getId()))
-                    .build())
-        .collect(Collectors.toList());
+    Set<Product> products =
+        productDetailsList.stream()
+            .map(
+                productDetails -> {
+                  if (idMapperService.getRozetkaProductIdByTitle(productDetails.getTitle())
+                      == productDetails.getId()) {
+                    Product existingProductEntry =
+                        productRepository.findProductByFullName(productDetails.getTitle());
+                    if (existingProductEntry != null) {
+                      return existingProductEntry;
+                    }
+                  }
+                  return Product.builder()
+                      .fullName(productDetails.getTitle())
+                      .description(productDetails.getDescription())
+                      .imageUrl(productDetails.getMainImageLink())
+                      .priceList(
+                          priceUtils.getJoinedList(
+                              priceService.getPriceByProductTitle(productDetails.getTitle()),
+                              getPrice(productDetails)))
+                      .techSpecs(
+                          techCharacteristicsService.getTechCharacteristicsByProductId(
+                              productDetails.getId()))
+                      .build();
+                })
+            .collect(Collectors.toSet());
+
+    productRepository.saveAll(products);
+    return products;
   }
 
   public Price getPrice(ProductDetails rozetkaProductDetails) {

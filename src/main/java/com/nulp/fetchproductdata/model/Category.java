@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,7 +27,7 @@ public class Category {
   @ManyToMany(cascade = CascadeType.PERSIST)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
-  private List<Product> products;
+  private Set<Product> products;
 
   @ManyToOne private Category parent;
 

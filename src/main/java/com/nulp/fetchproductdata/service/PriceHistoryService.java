@@ -49,17 +49,12 @@ public class PriceHistoryService {
       priceHistory =
           com.nulp.fetchproductdata.model.PriceHistory.builder()
               .product(product)
-              .priceRecords(Collections.singletonList(newRecord))
+              .priceRecords(new LinkedList<>(Collections.singletonList(newRecord)))
               .build();
     } else {
       priceHistory.addPriceRecord(newRecord);
     }
     priceHistoryRepository.save(priceHistory);
-
-    // updating product as hibernate deletes previous price list, as it is referenced
-    // by both history and actual product object
-    product.setPriceList(mutableCopy);
-    productRepository.save(product);
   }
 
   private Date getRecordDate() {

@@ -30,6 +30,6 @@ public class Price {
 
   private String purchaseUrl;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @OneToOne(fetch = FetchType.EAGER)
   private PriceProvider priceProvider;
 }

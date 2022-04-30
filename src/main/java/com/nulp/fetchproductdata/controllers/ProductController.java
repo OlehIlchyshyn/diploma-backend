@@ -2,13 +2,12 @@ package com.nulp.fetchproductdata.controllers;
 
 import com.nulp.fetchproductdata.api.ProductApi;
 import com.nulp.fetchproductdata.api.response.Product;
-import com.nulp.fetchproductdata.service.ProductSearchService;
 import com.nulp.fetchproductdata.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @CrossOrigin
@@ -18,12 +17,12 @@ public class ProductController implements ProductApi {
   private final ProductService productService;
 
   @Override
-  public List<Product> getAllProducts() {
+  public Set<Product> getAllProducts() {
     return productService.getAllProducts();
   }
 
   @Override
-  public List<Product> getProductsByCategory(Long categoryId) {
+  public Set<Product> getProductsByCategory(Long categoryId) {
     return productService.getProductsByCategory(categoryId);
   }
 
@@ -33,7 +32,7 @@ public class ProductController implements ProductApi {
   }
 
   @Override
-  public List<Product> findProductsByTitle(String query) {
+  public Set<Product> findProductsByTitle(String query) {
     return productService.findProductsByTitle(query);
   }
 }
