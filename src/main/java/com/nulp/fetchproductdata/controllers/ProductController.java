@@ -4,6 +4,8 @@ import com.nulp.fetchproductdata.api.ProductApi;
 import com.nulp.fetchproductdata.api.response.Product;
 import com.nulp.fetchproductdata.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,13 +19,12 @@ public class ProductController implements ProductApi {
   private final ProductService productService;
 
   @Override
-  public Set<Product> getAllProducts() {
-    return productService.getAllProducts();
-  }
-
-  @Override
-  public Set<Product> getProductsByCategory(Long categoryId) {
-    return productService.getProductsByCategory(categoryId);
+  public Page<Product> getAllProducts(Long categoryId, Pageable pageable) {
+    if (categoryId == null) {
+      return productService.getAllProducts(pageable);
+    } else {
+      return productService.getProductsByCategory(categoryId, pageable);
+    }
   }
 
   @Override

@@ -1,9 +1,12 @@
 package com.nulp.fetchproductdata.service;
 
 import com.nulp.fetchproductdata.api.response.Product;
+import com.nulp.fetchproductdata.repository.PagebleProductRepository;
 import com.nulp.fetchproductdata.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final PagebleProductRepository pagebleProductRepository;
   private final ProductSearchService productSearchService;
   private final ModelMapper modelMapper;
 
@@ -30,10 +34,15 @@ public class ProductService {
   }
 
   @Transactional
-  public Set<Product> getProductsByCategory(Long categoryId) {
-    return productRepository.findProductsByCategoryId(categoryId).stream()
-        .map(this::mapToResponse)
-        .collect(Collectors.toSet());
+  public Page<Product> getProductsByCategory(Long categoryId, Pageable pageable) {
+    return pagebleProductRepository
+        .findProductsByCategoryId(categoryId, pageable)
+        .map(this::mapToResponse);
+  }
+
+  @Transactional
+  public Page<Product> getAllProducts(Pageable pageable) {
+    return pagebleProductRepository.findAll(pageable).map(this::mapToResponse);
   }
 
   @Transactional

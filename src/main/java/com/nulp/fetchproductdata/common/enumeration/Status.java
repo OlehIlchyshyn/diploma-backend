@@ -16,6 +16,7 @@ public enum Status {
             case "InStock" -> AVAILABLE;
             case "InStoreOnly" -> AVAILABLE;
             case "OutOfStock" -> OUT_OF_STOCK;
+            case "hidden" -> OUT_OF_STOCK;
             default -> throw new IllegalStateException("Unexpected status value: " + status);
         };
     }

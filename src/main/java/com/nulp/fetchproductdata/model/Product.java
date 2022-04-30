@@ -36,8 +36,16 @@ public class Product {
   @Column(columnDefinition = "jsonb")
   private Map<String, Map<String, String>> techSpecs;
 
+  private Double averagePrice;
+
   @OneToMany(cascade = CascadeType.PERSIST)
   private List<Price> priceList;
 
   private String imageUrl;
+
+  @PrePersist
+  private void prePersist() {
+    this.averagePrice =
+        priceList.stream().map(Price::getAmount).reduce(Double::sum).orElse(0.0) / priceList.size();
+  }
 }

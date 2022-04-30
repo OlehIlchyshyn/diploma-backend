@@ -16,6 +16,8 @@ public class Product {
 
   private Map<String, Map<String, String>> techSpecs;
 
+  private Double averagePrice;
+
   private List<Price> priceList;
 
   private String imageUrl;
