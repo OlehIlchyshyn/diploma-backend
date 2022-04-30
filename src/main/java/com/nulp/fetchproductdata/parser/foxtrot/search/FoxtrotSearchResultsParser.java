@@ -1,16 +1,13 @@
 package com.nulp.fetchproductdata.parser.foxtrot.search;
 
+import com.nulp.fetchproductdata.common.WebClient;
 import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
-import java.net.ConnectException;
 
 @Component
 @Slf4j
@@ -27,25 +24,20 @@ public class FoxtrotSearchResultsParser {
             .build()
             .toUriString();
 
-    try {
-      Document document = Jsoup.connect(searchQueryUrl).get();
-
-      if (isNoMatchFound(document)) {
-        return new SearchResult(false);
-      }
-
-      if (document.location().contains("search")) {
-        return parseSearchResultFromHtml(document);
-      } else {
-        return parseReturnedPageAsSearchResult(document);
-      }
-    } catch (ConnectException e) {
-      log.warn("Connection failed, while trying to search for: " + title);
-    } catch (IOException e) {
-      e.printStackTrace();
+    Document document = WebClient.getDocument(searchQueryUrl);
+    if (document == null) {
+      return new SearchResult(false);
     }
 
-    return new SearchResult(false);
+    if (isNoMatchFound(document)) {
+      return new SearchResult(false);
+    }
+
+    if (document.location().contains("search")) {
+      return parseSearchResultFromHtml(document);
+    } else {
+      return parseReturnedPageAsSearchResult(document);
+    }
   }
 
   private boolean isNoMatchFound(Document document) {

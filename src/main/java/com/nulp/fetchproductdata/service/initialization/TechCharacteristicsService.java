@@ -21,6 +21,13 @@ public class TechCharacteristicsService {
   public Map<String, Map<String, String>> getTechCharacteristicsByProductId(Integer id) {
     TechCharacteristics techCharacteristics =
         techCharacteristicsParser.getTechCharacteristicsByProductId(id);
+    if (techCharacteristics == null) {
+      return Map.of(
+          "",
+          Map.of(
+              "Наявність відомостей про технічні характеристики",
+              "Технічні характеристики відсутні"));
+    }
     return techCharacteristics.getTechCharacteristicsGroupList().stream()
         .collect(
             Collectors.toMap(

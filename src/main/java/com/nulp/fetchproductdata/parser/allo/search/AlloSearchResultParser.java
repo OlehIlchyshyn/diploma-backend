@@ -1,14 +1,12 @@
 package com.nulp.fetchproductdata.parser.allo.search;
 
+import com.nulp.fetchproductdata.common.WebClient;
 import com.nulp.fetchproductdata.parser.foxtrot.search.model.SearchResult;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
 
 @Component
 public class AlloSearchResultParser {
@@ -22,17 +20,15 @@ public class AlloSearchResultParser {
             .build()
             .toUriString();
 
-    try {
-      Document document = Jsoup.connect(searchQueryUrl).get();
-      if (document.location().contains("products")) {
-        return getSearchResultAsProductPage(document);
-      }
-      return parseSearchResultFromHtml(document);
-    } catch (IOException e) {
-      e.printStackTrace();
+    Document document = WebClient.getDocument(searchQueryUrl);
+    if (document == null) {
+      return new SearchResult(false);
     }
 
-    return new SearchResult(false);
+    if (document.location().contains("products")) {
+      return getSearchResultAsProductPage(document);
+    }
+    return parseSearchResultFromHtml(document);
   }
 
   private SearchResult getSearchResultAsProductPage(Document document) {
