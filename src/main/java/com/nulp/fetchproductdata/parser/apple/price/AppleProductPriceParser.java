@@ -13,27 +13,23 @@ public class AppleProductPriceParser {
   private final String apiLink = "https://www.apple.com/us/shop/mcm/product-price?parts=";
 
   public Double getPriceBySku(String sku) {
-    return getPriceFromJson(WebClient.getApiResponse(apiLink + sku));
+    return getPriceFromJson(WebClient.getApiResponse(apiLink + sku), sku);
   }
 
-  private Double getPriceFromJson(String json) {
+  private Double getPriceFromJson(String json, String sku) {
     JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-    if (jsonObject.getAsJsonObject("items").entrySet().stream()
-        .findFirst()
-        .get()
-        .getValue()
-        .getAsJsonObject()
-        .keySet()
-        .contains("type")) {
+    try {
+      return jsonObject.getAsJsonObject("items").entrySet().stream()
+          .findFirst()
+          .get()
+          .getValue()
+          .getAsJsonObject()
+          .getAsJsonObject("price")
+          .getAsJsonPrimitive("value")
+          .getAsDouble();
+    } catch (NullPointerException e) {
+      log.warn("Unknown Apple product sku: " + sku);
       return null;
     }
-    return jsonObject.getAsJsonObject("items").entrySet().stream()
-        .findFirst()
-        .get()
-        .getValue()
-        .getAsJsonObject()
-        .getAsJsonObject("price")
-        .getAsJsonPrimitive("value")
-        .getAsDouble();
   }
 }

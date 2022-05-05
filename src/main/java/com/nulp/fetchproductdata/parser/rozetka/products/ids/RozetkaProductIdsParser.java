@@ -24,6 +24,7 @@ public class RozetkaProductIdsParser {
     String urlByCategory =
         UriComponentsBuilder.fromUriString(apiUrl)
             .queryParam("category_id", categoryId)
+            .queryParam("seller", "rozetka")
             .build()
             .toUriString();
 

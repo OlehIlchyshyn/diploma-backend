@@ -41,7 +41,19 @@ public class InitializationService {
   private final Properties properties;
 
   private final List<String> skippedCategories =
-      List.of("Товари для геймерів", "Знижені в ціні товари", "PlayStation");
+      List.of(
+          "Товари для геймерів",
+          "Знижені в ціні товари",
+          "PlayStation",
+          "Зовнішні жорсткі диски",
+          "Портативна акустика",
+          "Послуги",
+          "Джерела безперебійного живлення",
+          "Звукові карти",
+          "Жорсткі диски та дискові масиви",
+          "Блоки живлення",
+          "Корпуси",
+          "Материнські плати");
   private final List<String> categoriesWithSubchilds =
       List.of(
           "Аксесуари для ноутбуків і ПК",
@@ -50,7 +62,8 @@ public class InitializationService {
           "Телевізори та аксесуари",
           "Фото та відео",
           "Аудіо та домашні кінотеатри",
-          "Портативна електроніка");
+          "Портативна електроніка",
+          "Комп'ютери");
 
   @Transactional
   public List<Category> initCategories() {
