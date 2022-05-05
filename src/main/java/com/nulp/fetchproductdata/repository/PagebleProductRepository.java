@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PagebleProductRepository extends PagingAndSortingRepository<Product, Long> {
-  @Query("SELECT c.products FROM Category c WHERE c.id=:categoryId")
+  @Query("SELECT p FROM Product p JOiN p.categories c WHERE c.id=:categoryId")
   Page<Product> findProductsByCategoryId(Long categoryId, Pageable pageable);
 }

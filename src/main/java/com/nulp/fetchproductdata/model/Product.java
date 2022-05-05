@@ -13,6 +13,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @Entity
@@ -42,6 +43,9 @@ public class Product {
   private List<Price> priceList;
 
   private String imageUrl;
+
+  @ManyToMany(mappedBy = "products")
+  private Set<Category> categories;
 
   @PrePersist
   private void prePersist() {
