@@ -1,11 +1,11 @@
 package com.nulp.fetchproductdata.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -20,12 +20,10 @@ public class Category {
   private String title;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-  @EqualsAndHashCode.Exclude
   @ToString.Exclude
   private Set<Category> subCategories;
 
   @ManyToMany(cascade = CascadeType.PERSIST)
-  @EqualsAndHashCode.Exclude
   @ToString.Exclude
   private Set<Product> products;
 
@@ -36,5 +34,18 @@ public class Category {
       subCategories.forEach(category -> category.setParent(this));
     }
     this.subCategories = subCategories;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Category)) return false;
+    Category category = (Category) o;
+    return Objects.equals(id, category.id) && Objects.equals(title, category.getTitle());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, title);
   }
 }

@@ -1,6 +1,7 @@
 package com.nulp.fetchproductdata.parser.allo.product;
 
 import com.nulp.fetchproductdata.parser.allo.product.model.ProductData;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class AlloProductDataParser {
 
   public ProductData parseDataFromProductPage(String productPageUrl) {
@@ -17,7 +19,9 @@ public class AlloProductDataParser {
 
       return extractProductDataFromHtmlDocument(htmlDocument);
     } catch (IOException e) {
-      e.printStackTrace();
+      log.warn("IO Error: " + e.getMessage());
+    } catch (Exception e) {
+      log.warn("Error while trying to scrape price for product: " + productPageUrl);
     }
     return null;
   }
@@ -29,15 +33,16 @@ public class AlloProductDataParser {
     Element priceDataElement = document.getElementsByClass("p-trade__price-box").get(0);
 
     Element priceDetailsEl = priceDataElement.children().get(1);
-    Element oldPriceDiv = priceDetailsEl.children().get(0);
-    String oldPrice = oldPriceDiv.children().get(0).text().replaceAll(" ", "");
-    oldPrice = oldPrice.replaceAll("[^0-9]", "");
-    String discount = oldPriceDiv.children().get(1).text();
 
+    String oldPrice = "0.0", discount = "";
     Element currentPriceDiv;
     if (priceDetailsEl.children().size() == 1) {
       currentPriceDiv = priceDetailsEl.children().get(0);
     } else {
+      Element oldPriceDiv = priceDetailsEl.children().get(0);
+      oldPrice = oldPriceDiv.children().get(0).text().replaceAll(" ", "");
+      oldPrice = oldPrice.replaceAll("[^0-9]", "");
+      discount = oldPriceDiv.children().get(1).text();
       currentPriceDiv = priceDetailsEl.children().get(1);
     }
     String currentPrice = currentPriceDiv.children().get(1).attr("content");

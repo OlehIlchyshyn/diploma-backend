@@ -13,6 +13,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -51,5 +52,18 @@ public class Product {
   private void prePersist() {
     this.averagePrice =
         priceList.stream().map(Price::getAmount).reduce(Double::sum).orElse(0.0) / priceList.size();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Product)) return false;
+    Product product = (Product) o;
+    return Objects.equals(id, product.id) && fullName.equals(product.fullName);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, fullName);
   }
 }

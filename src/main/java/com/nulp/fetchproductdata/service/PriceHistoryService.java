@@ -5,6 +5,7 @@ import com.nulp.fetchproductdata.api.response.PriceHistory;
 import com.nulp.fetchproductdata.model.PriceRecord;
 import com.nulp.fetchproductdata.model.Product;
 import com.nulp.fetchproductdata.repository.PriceHistoryRepository;
+import com.nulp.fetchproductdata.repository.PriceRepository;
 import com.nulp.fetchproductdata.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class PriceHistoryService {
 
   private final PriceHistoryRepository priceHistoryRepository;
   private final ProductRepository productRepository;
+  private final PriceRepository priceRepository;
   private final ModelMapper modelMapper;
 
   @Transactional
@@ -32,16 +34,17 @@ public class PriceHistoryService {
   @Transactional
   public void addEntryToPriceHistory(
       long productId, List<com.nulp.fetchproductdata.model.Price> updatedPrices) {
-    List<com.nulp.fetchproductdata.model.Price> mutableCopy = new ArrayList<>(updatedPrices);
+    updatedPrices = priceRepository.saveAllAndFlush(updatedPrices);
     Product product = productRepository.findProductById(productId).orElse(null);
 
     if (product == null) {
       log.error("Product with id:" + productId + " does not exists");
       return;
     }
+    product.setPriceList(updatedPrices);
 
     PriceRecord newRecord =
-        PriceRecord.builder().date(getRecordDate()).priceList(mutableCopy).build();
+        PriceRecord.builder().date(getRecordDate()).priceList(updatedPrices).build();
 
     com.nulp.fetchproductdata.model.PriceHistory priceHistory =
         priceHistoryRepository.getPriceHistoryByProductId(productId);
