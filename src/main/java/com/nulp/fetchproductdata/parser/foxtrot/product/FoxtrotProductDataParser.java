@@ -25,6 +25,8 @@ public class FoxtrotProductDataParser {
       log.warn("Can't fetch product for url: " + productPageUrl);
     } catch (IOException e) {
       e.printStackTrace();
+    } catch (Exception e) {
+      log.error(e.getMessage());
     }
     return null;
   }

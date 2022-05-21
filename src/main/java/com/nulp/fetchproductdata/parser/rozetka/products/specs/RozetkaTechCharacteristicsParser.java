@@ -21,7 +21,7 @@ public class RozetkaTechCharacteristicsParser {
             .toUriString();
 
     String json = WebClient.getApiResponse(uriWithIdParam);
-
+    if (json.equals("")) return null;
     return translateToModel(json);
   }
 

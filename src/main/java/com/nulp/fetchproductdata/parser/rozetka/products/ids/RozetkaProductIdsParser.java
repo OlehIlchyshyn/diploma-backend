@@ -29,6 +29,7 @@ public class RozetkaProductIdsParser {
             .toUriString();
 
     String jsonResponse = WebClient.getApiResponse(urlByCategory);
+    if (jsonResponse.equals("")) return Collections.emptyList();
     IdsResponse firstPage = getProductDataFromJson(jsonResponse);
     List<Integer> allIds = new ArrayList<>(firstPage.getCount());
     allIds.addAll(firstPage.getIds());
@@ -56,6 +57,7 @@ public class RozetkaProductIdsParser {
             .toUriString();
 
     String jsonResponse = WebClient.getApiResponse(urlByCategoryAndProducer);
+    if (jsonResponse.equals("")) return Collections.emptyList();
     IdsResponse firstPage = getProductDataFromJson(jsonResponse);
     List<Integer> allIds = new ArrayList<>(firstPage.getCount());
     allIds.addAll(firstPage.getIds());
@@ -84,6 +86,8 @@ public class RozetkaProductIdsParser {
       if (dataArray.isEmpty()) {
         return IdsResponse.builder().ids(Collections.emptyList()).count(0).pagesCount(0).build();
       }
+    } catch (Exception e) {
+      log.warn("Encountered exception while trying to extract data from json array: " + e.getMessage());
     }
     return null;
   }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class RozetkaProductDetailsParser {
             .toUriString();
 
     String json = WebClient.getApiResponse(uriWithIdsParam);
+    if (json.equals("")) return Collections.emptyList();
     JsonArray dataArray = gson.fromJson(json, JsonObject.class).getAsJsonArray("data");
     Type productListType = new TypeToken<List<ProductDetails>>() {}.getType();
     return gson.fromJson(dataArray, productListType);

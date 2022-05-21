@@ -17,6 +17,7 @@ public class AppleProductPriceParser {
   }
 
   private Double getPriceFromJson(String json, String sku) {
+    if (json.equals("")) return null;
     JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
     try {
       return jsonObject.getAsJsonObject("items").entrySet().stream()

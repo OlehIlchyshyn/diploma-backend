@@ -12,7 +12,7 @@ public class RozetkaPriceParser {
 
   public Price getPriceById(long productId) {
     String json = WebClient.getApiResponse(apiLink + productId);
-
+    if (json.equals("")) return null;
     return translateJsonToPriceModel(json);
   }
 

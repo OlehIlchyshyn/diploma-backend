@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class RozetkaCategoriesParser {
 
   public List<Category> fetchCategoriesFromApi() {
     String json = WebClient.getApiResponse(categoriesApiUrl);
+    if (json.equals("")) return Collections.emptyList();
     JsonObject jsonObject = gson.fromJson(json, JsonObject.class).getAsJsonObject("data");
     List<RootCategory> rootCategories =
         jsonObject.entrySet().stream()
