@@ -38,7 +38,7 @@ public class AlloPriceProvider implements PriceProvider {
     return Price.builder()
         .priceProvider(getPriceProvider())
         .amount(productData.getPrice())
-        .purchaseUrl(searchResult.getUrl())
+        .purchaseUrl(searchResult.getUrl().substring(0, Math.min(searchResult.getUrl().length(), 255)))
         .currency(Currency.valueOf(productData.getCurrency()))
         .availabilityStatus(Status.getStatus(productData.getAvailability()))
         .build();

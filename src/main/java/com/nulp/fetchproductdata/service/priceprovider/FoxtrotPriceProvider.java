@@ -37,7 +37,7 @@ public class FoxtrotPriceProvider implements PriceProvider {
     return Price.builder()
         .priceProvider(getPriceProvider())
         .amount(foxtrotProductData.getOffers().getPrice())
-        .purchaseUrl(foxtrotSearchResult.getUrl())
+        .purchaseUrl(foxtrotSearchResult.getUrl().substring(0, Math.min(foxtrotSearchResult.getUrl().length(), 255)))
         .currency(Currency.valueOf(foxtrotProductData.getOffers().getPriceCurrency()))
         .availabilityStatus(Status.getStatus(foxtrotProductData.getOffers().getAvailability()))
         .build();

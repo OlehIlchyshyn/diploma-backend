@@ -22,9 +22,8 @@ public class ProductController implements ProductApi {
   public Page<Product> getAllProducts(Long categoryId, Pageable pageable) {
     if (categoryId == null) {
       return productService.getAllProducts(pageable);
-    } else {
-      return productService.getProductsByCategory(categoryId, pageable);
     }
+    return productService.getProductsByCategory(categoryId, pageable);
   }
 
   @Override

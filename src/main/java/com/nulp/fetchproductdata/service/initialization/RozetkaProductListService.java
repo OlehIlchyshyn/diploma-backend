@@ -97,7 +97,7 @@ public class RozetkaProductListService {
         .amount(rozetkaProductDetails.getPrice())
         .currency(Currency.UAH)
         .availabilityStatus(Status.getStatus(rozetkaProductDetails.getSellStatus()))
-        .purchaseUrl(rozetkaProductDetails.getHref())
+        .purchaseUrl(rozetkaProductDetails.getHref().substring(0, Math.min(rozetkaProductDetails.getHref().length(), 255)))
         .priceProvider(getRozetkaPriceProvider())
         .build();
   }

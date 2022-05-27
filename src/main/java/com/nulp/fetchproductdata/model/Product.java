@@ -49,6 +49,7 @@ public class Product {
   private Set<Category> categories;
 
   @PrePersist
+  @PreUpdate
   private void prePersist() {
     this.averagePrice =
         priceList.stream().map(Price::getAmount).reduce(Double::sum).orElse(0.0) / priceList.size();
